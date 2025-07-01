@@ -1,153 +1,234 @@
 package com.project.demo.logic.entity.user;
-import com.project.demo.logic.entity.order.Order;
-import com.project.demo.logic.entity.rol.Role;
+
+import com.project.demo.logic.entity.role.Role;
 import jakarta.persistence.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import java.time.LocalDateTime;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-
-@Table(name = "user")
 @Entity
-public class User implements UserDetails {
+@Table(name = "users")
+public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String name;
-    private String lastname;
-    @Column(unique = true, length = 100, nullable = false)
-    private String email;
+    private Integer id;
 
-    @Column(nullable = false)
-    private String password;
+    @Column(name = "business_name")
+    private String businessName;
 
-    @CreationTimestamp
-    @Column(updatable = false, name = "created_at")
-    private Date createdAt;
+    @Column(name = "business_mission", columnDefinition = "TEXT")
+    private String businessMission;
 
-    @UpdateTimestamp
-    @Column(name = "updated_at")
-    private Date updatedAt;
+    @Column(name = "business_vision", columnDefinition = "TEXT")
+    private String businessVision;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role.getName().toString());
-        return List.of(authority);
-    }
+    @Column(name = "business_id", unique = true, length = 100)
+    private String businessId;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
+    @Column(name = "business_country", length = 100)
+    private String businessCountry;
+
+    @Column(name = "business_state_province", length = 100)
+    private String businessStateProvince;
+
+    @Column(name = "business_other_directions", columnDefinition = "TEXT")
+    private String businessOtherDirections;
+
+    @Column(name = "business_location", length = 255)
+    private String businessLocation;
+
+    @Column(name = "user_name", length = 100)
+    private String userName;
+
+    @Column(name = "user_first_surename", length = 100)
+    private String userFirstSurename;
+
+    @Column(name = "user_second_surename", length = 100)
+    private String userSecondSurename;
+
+    @Column(name = "user_gender", length = 20)
+    private String userGender;
+
+    @Column(name = "user_phone_number", length = 50)
+    private String userPhoneNumber;
+
+    @Column(name = "user_email", length = 150)
+    private String userEmail;
+
+    @Column(name = "user_password", nullable = false, length = 255)
+    private String userPassword;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "role")
     private Role role;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<Order> orders;
+    @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private LocalDateTime createdAt;
 
-    // Constructors
-    public User() {}
+    @Column(name = "updated_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
+    private LocalDateTime updatedAt;
 
+    @Column(name = "isActive")
+    private Boolean isActive;
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
+    // Getters y Setters
 
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
-    @Override
-    public String getUsername() {
-        return email;
-    }
-
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getBusinessName() {
+        return businessName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setBusinessName(String businessName) {
+        this.businessName = businessName;
     }
 
-    public String getLastname() {
-        return lastname;
+    public String getBusinessMission() {
+        return businessMission;
     }
 
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
+    public void setBusinessMission(String businessMission) {
+        this.businessMission = businessMission;
     }
 
-    public String getEmail() {
-        return email;
+    public String getBusinessVision() {
+        return businessVision;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setBusinessVision(String businessVision) {
+        this.businessVision = businessVision;
     }
 
-    @Override
-    public String getPassword() {
-        return password;
+    public String getBusinessId() {
+        return businessId;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setBusinessId(String businessId) {
+        this.businessId = businessId;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
+    public String getBusinessCountry() {
+        return businessCountry;
     }
 
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
+    public void setBusinessCountry(String businessCountry) {
+        this.businessCountry = businessCountry;
     }
 
-    public Date getUpdatedAt() {
-        return updatedAt;
+    public String getBusinessStateProvince() {
+        return businessStateProvince;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
+    public void setBusinessStateProvince(String businessStateProvince) {
+        this.businessStateProvince = businessStateProvince;
+    }
+
+    public String getBusinessOtherDirections() {
+        return businessOtherDirections;
+    }
+
+    public void setBusinessOtherDirections(String businessOtherDirections) {
+        this.businessOtherDirections = businessOtherDirections;
+    }
+
+    public String getBusinessLocation() {
+        return businessLocation;
+    }
+
+    public void setBusinessLocation(String businessLocation) {
+        this.businessLocation = businessLocation;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserFirstSurename() {
+        return userFirstSurename;
+    }
+
+    public void setUserFirstSurename(String userFirstSurename) {
+        this.userFirstSurename = userFirstSurename;
+    }
+
+    public String getUserSecondSurename() {
+        return userSecondSurename;
+    }
+
+    public void setUserSecondSurename(String userSecondSurename) {
+        this.userSecondSurename = userSecondSurename;
+    }
+
+    public String getUserGender() {
+        return userGender;
+    }
+
+    public void setUserGender(String userGender) {
+        this.userGender = userGender;
+    }
+
+    public String getUserPhoneNumber() {
+        return userPhoneNumber;
+    }
+
+    public void setUserPhoneNumber(String userPhoneNumber) {
+        this.userPhoneNumber = userPhoneNumber;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public String getUserPassword() {
+        return userPassword;
+    }
+
+    public void setUserPassword(String userPassword) {
+        this.userPassword = userPassword;
     }
 
     public Role getRole() {
         return role;
     }
 
-    public List<Order> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(List<Order> orders) {
-        this.orders = orders;
-    }
-
-    public User setRole(Role role) {
+    public void setRole(Role role) {
         this.role = role;
+    }
 
-        return this;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean active) {
+        isActive = active;
     }
 }
