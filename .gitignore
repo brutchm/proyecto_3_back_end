@@ -19,6 +19,26 @@
 *.tar.gz
 *.rar
 
+.graddle/
+.idea/
+build/tmp/
+build/classes/
+build/generated/
+build/resources/
+/.gradle/buildOutputCleanup
+.gradle/8.7/checksums/checksums.lock
+.gradle/8.7/dependencies-accessors/gc.properties
+.gradle/8.7/executionHistory/executionHistory.bin
+.gradle/8.7/executionHistory/executionHistory.lock
+.gradle/8.7/fileChanges/last-build.bin
+.gradle/8.7/fileHashes/fileHashes.bin
+.gradle/8.7/fileHashes/fileHashes.lock
+.gradle/8.7/fileHashes/resourceHashesCache.bin
+.gradle/8.7/gc.properties
+.gradle/vcs-1/gc.properties
+
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+
+src/main/resources/application.properties
