@@ -1,8 +1,8 @@
 package com.project.demo.rest.admin;
 
-import com.project.demo.logic.entity.rol.Role;
-import com.project.demo.logic.entity.rol.RoleEnum;
-import com.project.demo.logic.entity.rol.RoleRepository;
+import com.project.demo.logic.entity.role.Role;
+import com.project.demo.logic.entity.role.RoleEnum;
+import com.project.demo.logic.entity.role.RoleRepository;
 import com.project.demo.logic.entity.user.User;
 import com.project.demo.logic.entity.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,16 +31,16 @@ public class AdminController {
     @PostMapping
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     public User createAdministrator(@RequestBody User newAdminUser) {
-        Optional<Role> optionalRole = roleRepository.findByName(RoleEnum.ADMIN);
+        Optional<Role> optionalRole = roleRepository.findByRoleName(RoleEnum.SUPER_ADMIN);
 
         if (optionalRole.isEmpty()) {
             return null;
         }
 
         var user = new User();
-        user.setName(newAdminUser.getName());
-        user.setEmail(newAdminUser.getEmail());
-        user.setPassword(passwordEncoder.encode(newAdminUser.getPassword()));
+        user.setUserName(newAdminUser.getUserName());
+        user.setUserEmail(newAdminUser.getUserEmail());
+        user.setUserPassword(passwordEncoder.encode(newAdminUser.getUserPassword()));
         user.setRole(optionalRole.get());
 
         return userRepository.save(user);
