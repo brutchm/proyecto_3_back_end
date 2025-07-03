@@ -6,8 +6,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface FarmPlotRepository extends JpaRepository<FarmPlot, Integer> {
-    List<FarmPlot> findByFarmId(Integer farmId);
+public interface FarmPlotRepository extends JpaRepository<FarmPlot, Long> {
+    List<FarmPlot> findByFarmId(Long farmId);
 
-    Optional<FarmPlot> findByPlotNameAndFarmId(String plotName, Integer farmId);
+    Optional<FarmPlot> findByPlotNameAndFarmId(String plotName, Long farmId);
+
+    Optional<FarmPlot> findByIdAndFarmId(Long id, Long farmId);
 }

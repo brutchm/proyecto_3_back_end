@@ -10,7 +10,7 @@ public class FarmPlot {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "farm_id", nullable = false)
@@ -39,8 +39,8 @@ public class FarmPlot {
     private boolean isActive;
 
     // Getters and Setters
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
     public Farm getFarm() { return farm; }
     public void setFarm(Farm farm) { this.farm = farm; }
     public String getPlotName() { return plotName; }

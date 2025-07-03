@@ -1,4 +1,4 @@
-package com.project.demo.logic.entity.rol;
+package com.project.demo.logic.entity.role;
 
 import com.project.demo.logic.entity.user.User;
 import com.project.demo.logic.entity.user.UserRepository;
@@ -36,23 +36,23 @@ public class AdminSeeder implements ApplicationListener<ContextRefreshedEvent> {
 
     private void createSuperAdministrator() {
         User superAdmin = new User();
-        superAdmin.setName("Super");
-        superAdmin.setLastname("Admin");
-        superAdmin.setEmail("super.admin@gmail.com");
-        superAdmin.setPassword("superadmin123");
+        superAdmin.setUserName("Super");
+        superAdmin.setUserFirstSurename("Admin");
+        superAdmin.setUserEmail("super.admin@gmail.com");
+        superAdmin.setUserPassword("superadmin123");
 
-        Optional<Role> optionalRole = roleRepository.findByName(RoleEnum.SUPER_ADMIN);
-        Optional<User> optionalUser = userRepository.findByEmail(superAdmin.getEmail());
+        Optional<Role> optionalRole = roleRepository.findByRoleName(RoleEnum.SUPER_ADMIN);
+        Optional<User> optionalUser = userRepository.findByUserEmail(superAdmin.getUserEmail());
 
         if (optionalRole.isEmpty() || optionalUser.isPresent()) {
             return;
         }
 
         var user = new User();
-        user.setName(superAdmin.getName());
-        user.setLastname(superAdmin.getLastname());
-        user.setEmail(superAdmin.getEmail());
-        user.setPassword(passwordEncoder.encode(superAdmin.getPassword()));
+        user.setUserName(superAdmin.getUserName());
+        user.setUserFirstSurename(superAdmin.getUserFirstSurename());
+        user.setUserEmail(superAdmin.getUserEmail());
+        user.setUserPassword(passwordEncoder.encode(superAdmin.getUserPassword()));
         user.setRole(optionalRole.get());
 
         userRepository.save(user);

@@ -9,12 +9,22 @@ import java.util.Objects;
 public class CorporationUserSubscriptionId implements Serializable {
 
     @Column(name = "corporation_user_id")
-    private Integer corporationUserId;
+    private Long corporationUserId;
 
     @Column(name = "individual_user_id")
-    private Integer individualUserId;
+    private Long individualUserId;
 
     // Constructores, Getters, Setters, hashCode, y equals
+
+
+    public CorporationUserSubscriptionId(Long corporationUserId, Long individualUserId) {
+        this.corporationUserId = corporationUserId;
+        this.individualUserId = individualUserId;
+    }
+
+    public CorporationUserSubscriptionId() {
+
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -29,19 +39,19 @@ public class CorporationUserSubscriptionId implements Serializable {
         return Objects.hash(corporationUserId, individualUserId);
     }
 
-    public Integer getCorporationUserId() {
+    public Long getCorporationUserId() {
         return corporationUserId;
     }
 
-    public void setCorporationUserId(Integer corporationUserId) {
+    public void setCorporationUserId(Long corporationUserId) {
         this.corporationUserId = corporationUserId;
     }
 
-    public Integer getIndividualUserId() {
+    public Long getIndividualUserId() {
         return individualUserId;
     }
 
-    public void setIndividualUserId(Integer individualUserId) {
+    public void setIndividualUserId(Long individualUserId) {
         this.individualUserId = individualUserId;
     }
 }

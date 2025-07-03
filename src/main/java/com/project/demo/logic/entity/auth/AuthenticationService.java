@@ -29,12 +29,12 @@ public class AuthenticationService {
     public User authenticate(User input) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        input.getEmail(),
-                        input.getPassword()
+                        input.getUserEmail(),
+                        input.getUserPassword()
                 )
         );
 
-        return userRepository.findByEmail(input.getEmail())
+        return userRepository.findByUserEmail(input.getUserEmail())
                 .orElseThrow();
     }
 }

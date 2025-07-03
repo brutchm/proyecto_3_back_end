@@ -9,7 +9,7 @@ public class Crop {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(name = "crop_name", nullable = false)
     private String cropName;
@@ -33,8 +33,8 @@ public class Crop {
     private boolean isActive;
 
     // Getters and Setters
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
     public String getCropName() { return cropName; }
     public void setCropName(String cropName) { this.cropName = cropName; }
     public String getCropPicture() { return cropPicture; }

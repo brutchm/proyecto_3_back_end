@@ -9,7 +9,7 @@ public class Farm {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(name = "farm_name", nullable = false)
     private String farmName;
@@ -43,8 +43,8 @@ public class Farm {
     private boolean isActive;
 
     // Getters and Setters
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
     public String getFarmName() { return farmName; }
     public void setFarmName(String farmName) { this.farmName = farmName; }
     public String getFarmCountry() { return farmCountry; }

@@ -2,9 +2,10 @@ package com.project.demo.logic.entity.plot;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import java.util.List;
+
+import java.util.Optional;
 
 @Repository
-public interface PlotHistoryRepository extends JpaRepository<PlotHistory, Long> {
-    List<PlotHistory> findByFarmPlotId(Long farmPlotId);
+public interface PlotGeometryRepository extends JpaRepository<PlotGeometry, Long> {
+    Optional<PlotGeometry> findByFarmPlot_Id(Long plotId);
 }

@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface AnimalGroupHistoryRepository extends JpaRepository<AnimalGroupHistory, Integer> {
-    List<AnimalGroupHistory> findByAnimalGroupId(Integer animalGroupId);
+public interface AnimalGroupHistoryRepository extends JpaRepository<AnimalGroupHistory, Long> {
+    List<AnimalGroupHistory> findByAnimalGroupId(Long animalGroupId);
 }
