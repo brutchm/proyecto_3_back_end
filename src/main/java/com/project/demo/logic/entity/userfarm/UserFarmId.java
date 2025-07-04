@@ -9,24 +9,24 @@ import java.util.Objects;
 public class UserFarmId implements Serializable {
 
     @Column(name = "farm_id")
-    private Integer farmId;
+    private Long farmId;
 
     @Column(name = "user_id")
-    private Integer userId;
+    private Long userId;
 
     // Constructores, Getters, Setters, hashCode y equals son necesarios
 
     public UserFarmId() {}
 
-    public UserFarmId(Integer farmId, Integer userId) {
+    public UserFarmId(Long farmId, Long userId) {
         this.farmId = farmId;
         this.userId = userId;
     }
 
-    public Integer getFarmId() { return farmId; }
-    public void setFarmId(Integer farmId) { this.farmId = farmId; }
-    public Integer getUserId() { return userId; }
-    public void setUserId(Integer userId) { this.userId = userId; }
+    public Long getFarmId() { return farmId; }
+    public void setFarmId(Long farmId) { this.farmId = farmId; }
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
 
     @Override
     public boolean equals(Object o) {

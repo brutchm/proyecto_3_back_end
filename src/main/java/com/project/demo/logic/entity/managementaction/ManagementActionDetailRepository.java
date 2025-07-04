@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ManagementActionDetailRepository extends JpaRepository<ManagementActionDetail, Integer> {
-    List<ManagementActionDetail> findByActionId(Integer actionId);
+public interface ManagementActionDetailRepository extends JpaRepository<ManagementActionDetail, Long> {
+    List<ManagementActionDetail> findByActionId(Long actionId);
 }

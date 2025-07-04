@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface PlotHistoryRepository extends JpaRepository<PlotHistory, Integer> {
-    List<PlotHistory> findByFarmPlotId(Integer farmPlotId);
+public interface PlotHistoryRepository extends JpaRepository<PlotHistory, Long> {
+    List<PlotHistory> findByFarmPlotId(Long farmPlotId);
 }

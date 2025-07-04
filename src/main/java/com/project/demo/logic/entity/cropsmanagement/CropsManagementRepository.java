@@ -7,6 +7,6 @@ import java.util.List;
 
 @Repository
 public interface CropsManagementRepository extends JpaRepository<CropsManagement, CropsManagementId> {
-    List<CropsManagement> findById_FarmId(Integer farmId);
-    List<CropsManagement> findById_CropId(Integer cropId);
+    List<CropsManagement> findById_FarmId(Long farmId);
+    List<CropsManagement> findById_CropId(Long cropId);
 }

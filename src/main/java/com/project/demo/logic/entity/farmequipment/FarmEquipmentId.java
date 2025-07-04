@@ -10,10 +10,10 @@ import java.util.Objects;
 public class FarmEquipmentId implements Serializable {
 
     @Column(name = "equipment_id")
-    private Integer equipmentId;
+    private Long equipmentId;
 
     @Column(name = "farm_id")
-    private Integer farmId;
+    private Long farmId;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -21,7 +21,7 @@ public class FarmEquipmentId implements Serializable {
     // Constructores, Getters, Setters, hashCode y equals
     public FarmEquipmentId() {}
 
-    public FarmEquipmentId(Integer equipmentId, Integer farmId, LocalDateTime createdAt) {
+    public FarmEquipmentId(Long equipmentId, Long farmId, LocalDateTime createdAt) {
         this.equipmentId = equipmentId;
         this.farmId = farmId;
         this.createdAt = createdAt;
@@ -38,5 +38,29 @@ public class FarmEquipmentId implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(equipmentId, farmId, createdAt);
+    }
+
+    public Long getEquipmentId() {
+        return equipmentId;
+    }
+
+    public void setEquipmentId(Long equipmentId) {
+        this.equipmentId = equipmentId;
+    }
+
+    public Long getFarmId() {
+        return farmId;
+    }
+
+    public void setFarmId(Long farmId) {
+        this.farmId = farmId;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }
