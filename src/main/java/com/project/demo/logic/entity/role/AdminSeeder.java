@@ -54,7 +54,7 @@ public class AdminSeeder implements ApplicationListener<ContextRefreshedEvent> {
         user.setUserEmail(superAdmin.getUserEmail());
         user.setUserPassword(passwordEncoder.encode(superAdmin.getUserPassword()));
         user.setRole(optionalRole.get());
-
+        user.setIsActive(false);
         userRepository.save(user);
     }
 }

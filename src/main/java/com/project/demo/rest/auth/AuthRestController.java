@@ -46,6 +46,8 @@ public class AuthRestController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> authenticate(@RequestBody User user) {
+        System.out.println(user.getUserEmail());
+        System.out.println(user.getUserPassword());
         User authenticatedUser = authenticationService.authenticate(user);
 
         String jwtToken = jwtService.generateToken((UserDetails) authenticatedUser);
@@ -78,5 +80,7 @@ public class AuthRestController {
         User savedUser = userRepository.save(user);
         return ResponseEntity.ok(savedUser);
     }
+
+
 
 }

@@ -1,5 +1,6 @@
 package com.project.demo.logic.entity.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.demo.logic.entity.role.Role;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -64,6 +65,7 @@ public class User implements UserDetails {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role")
+    @JsonIgnore()
     private Role role;
 
     @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
@@ -83,32 +85,32 @@ public class User implements UserDetails {
 
     @Override
     public String getPassword() {
-        return "";
+        return this.userPassword;
     }
 
     @Override
     public String getUsername() {
-        return "";
+        return this.userName;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 
     // Getters y Setters
