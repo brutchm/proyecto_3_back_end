@@ -88,18 +88,19 @@ public class AuthRestController {
         Optional<User> existingUser = userRepository.findByUserEmail(user.getUserEmail());
         Optional<User> existingBusinessId = userRepository.findByBusinessId(user.getBusinessId());
         if (existingUser.isPresent()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Este correo ya se encuentra en uso.");
+            return new GlobalResponseHandler().handleResponse("Este correo ya se encuentra en uso.",null,HttpStatus.CONFLICT,request);
         }
 
         if (existingBusinessId.isPresent()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("La cédula indicada ya se encuentra en uso.");
+            return new GlobalResponseHandler().handleResponse("La cédula indicada ya se encuentra en uso.",null,HttpStatus.CONFLICT,request);
         }
 
         user.setUserPassword(passwordEncoder.encode(user.getUserPassword()));
         Optional<Role> optionalRole = roleRepository.findByRoleName(RoleEnum.USER);
 
         if (optionalRole.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Rol no encontrado.");
+
+            return new GlobalResponseHandler().handleResponse("Rol no encontrado.",null,HttpStatus.CONFLICT,request);
         }
 
         user.setRole(optionalRole.get());
