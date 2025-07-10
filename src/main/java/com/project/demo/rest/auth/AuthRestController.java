@@ -2,6 +2,7 @@ package com.project.demo.rest.auth;
 
 import com.project.demo.logic.entity.auth.AuthenticationService;
 import com.project.demo.logic.entity.auth.JwtService;
+import com.project.demo.logic.entity.http.GlobalResponseHandler;
 import com.project.demo.logic.entity.role.Role;
 import com.project.demo.logic.entity.role.RoleEnum;
 import com.project.demo.logic.entity.role.RoleRepository;
@@ -10,6 +11,7 @@ import com.project.demo.logic.entity.user.User;
 import com.project.demo.logic.entity.user.UserRepository;
 import com.project.demo.logic.entity.auth.VerificationCodeService;
 import com.project.demo.logic.entity.mail.EmailService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -130,5 +132,41 @@ public class AuthRestController {
         userRepository.save(user);
 
         return ResponseEntity.ok(new MessageResponse("Password reset successfully"));
+    }
+    
+    @PostMapping("/signup/corporation")
+    public ResponseEntity<?> registerUserCorporation(@RequestBody User user, HttpServletRequest request) {
+        Optional<User> existingUser = userRepository.findByUserEmail(user.getUserEmail());
+        Optional<User> existingBusinessId = userRepository.findByBusinessId(user.getBusinessId());
+        if (existingUser.isPresent()) {
+            return new GlobalResponseHandler().handleResponse("Este correo ya se encuentra en uso.",null,HttpStatus.CONFLICT,request);
+        }
+
+        if (existingBusinessId.isPresent()) {
+            return new GlobalResponseHandler().handleResponse("La cédula indicada ya se encuentra en uso.",null,HttpStatus.CONFLICT,request);
+        }
+
+        user.setUserPassword(passwordEncoder.encode(user.getUserPassword()));
+        Optional<Role> optionalRole = roleRepository.findByRoleName(RoleEnum.CORPORATION);
+
+        if (optionalRole.isEmpty()) {
+
+            return new GlobalResponseHandler().handleResponse("Rol no encontrado.",null,HttpStatus.CONFLICT,request);
+        }
+
+        user.setRole(optionalRole.get());
+
+        if (user.getBusinessName().isEmpty() || user.getBusinessId().isEmpty()
+                || user.getBusinessCountry().isEmpty() || user.getBusinessStateProvince().isEmpty()
+                || user.getPassword().isEmpty() ||
+                user.getBusinessMission().isEmpty() || user.getBusinessVision().isEmpty()) {
+
+            return new GlobalResponseHandler().handleResponse("Debe ingresar los campos obligatorios.",user,HttpStatus.NOT_ACCEPTABLE,request);
+
+        }else{
+            User savedUser = userRepository.save(user);
+            return new GlobalResponseHandler().handleResponse("Usuario corporativo registrado exitosamente.",savedUser,HttpStatus.CREATED,request);
+        }
+
     }
 }
