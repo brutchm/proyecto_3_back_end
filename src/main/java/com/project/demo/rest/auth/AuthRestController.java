@@ -24,6 +24,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 
+/**
+ * Controlador REST para autenticación y recuperación de contraseña de usuarios.
+ * Incluye login, registro, registro de corporaciones y endpoints para recuperación de contraseña vía email.
+ */
 @RequestMapping("/auth")
 @RestController
 public class AuthRestController {
@@ -52,6 +56,11 @@ public class AuthRestController {
         this.authenticationService = authenticationService;
     }
 
+    /**
+     * Autentica un usuario y retorna un JWT si las credenciales son válidas.
+     * @param user Usuario con email y contraseña.
+     * @return LoginResponse con token JWT y datos del usuario autenticado.
+     */
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> authenticate(@RequestBody User user) {
         User authenticatedUser = authenticationService.authenticate(user);
@@ -69,6 +78,11 @@ public class AuthRestController {
         return ResponseEntity.ok(loginResponse);
     }
 
+    /**
+     * Registra un nuevo usuario estándar (rol USER).
+     * @param user Datos del usuario a registrar.
+     * @return Usuario registrado o error si el email ya existe.
+     */
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
         Optional<User> existingUser = userRepository.findByUserEmail(user.getUserEmail());
@@ -92,6 +106,11 @@ public class AuthRestController {
     record ResetPasswordRequest(String email, String code, String newPassword) {}
     public record MessageResponse(String message) {}
 
+    /**
+     * Solicita el envío de un código de verificación al email para recuperación de contraseña.
+     * @param request Objeto con el email del usuario.
+     * @return Mensaje de éxito o error si el email no existe.
+     */
     @PostMapping("/reset-password/request")
     public ResponseEntity<?> requestPasswordReset(@RequestBody PasswordResetRequest request) {
         Optional<User> optionalUser = userRepository.findByUserEmail(request.email());
@@ -106,6 +125,11 @@ public class AuthRestController {
         return ResponseEntity.ok(new MessageResponse("Password reset code sent to your email"));
     }
 
+    /**
+     * Verifica el código enviado al email del usuario para recuperación de contraseña.
+     * @param request Objeto con email y código recibido.
+     * @return Mensaje de éxito o error si el código es inválido o expiró.
+     */
     @PostMapping("/reset-password/verify")
     public ResponseEntity<?> verifyCode(@RequestBody VerifyCodeRequest request) {
         boolean isValid = verificationCodeService.verifyCode(request.email(), request.code());
@@ -115,6 +139,11 @@ public class AuthRestController {
         return ResponseEntity.ok(new MessageResponse("Code verified successfully"));
     }
 
+    /**
+     * Permite restablecer la contraseña de un usuario si el código es válido.
+     * @param request Objeto con email, código y nueva contraseña.
+     * @return Mensaje de éxito o error si el código es inválido o expiró.
+     */
     @PostMapping("/reset-password/reset")
     public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordRequest request) {
         Optional<User> optionalUser = userRepository.findByUserEmail(request.email());
@@ -134,6 +163,12 @@ public class AuthRestController {
         return ResponseEntity.ok(new MessageResponse("Password reset successfully"));
     }
     
+    /**
+     * Registra un nuevo usuario corporativo (rol CORPORATION).
+     * @param user Datos del usuario corporativo.
+     * @param request HttpServletRequest para manejo de respuestas globales.
+     * @return Usuario corporativo registrado o error si los datos ya existen o faltan campos obligatorios.
+     */
     @PostMapping("/signup/corporation")
     public ResponseEntity<?> registerUserCorporation(@RequestBody User user, HttpServletRequest request) {
         Optional<User> existingUser = userRepository.findByUserEmail(user.getUserEmail());
