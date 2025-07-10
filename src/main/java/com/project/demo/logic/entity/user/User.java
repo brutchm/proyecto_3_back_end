@@ -62,7 +62,7 @@ public class User implements UserDetails {
     @Column(name = "user_email", length = 150)
     private String userEmail;
 
-    @Column(name = "user_password", nullable = false, length = 255)
+    @Column(name = "user_password", length = 255)
     private String userPassword;
 
     @ManyToOne(fetch = FetchType.EAGER)
