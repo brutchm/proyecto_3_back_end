@@ -45,7 +45,7 @@ public class User implements UserDetails {
     private String businessLocation;
 
     @Column(name = "user_name", length = 100)
-    private String userName;
+    private String name;
 
     @Column(name = "user_first_surename", length = 100)
     private String userFirstSurename;
@@ -65,7 +65,7 @@ public class User implements UserDetails {
     @Column(name = "user_password", nullable = false, length = 255)
     private String userPassword;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role")
     @JsonIgnore()
     private Role role;
@@ -95,7 +95,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.userName;
+        return this.userEmail;
     }
 
     @Override
@@ -192,12 +192,12 @@ public class User implements UserDetails {
         this.businessLocation = businessLocation;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getName() {
+        return name;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setName(String userName) {
+        this.name = userName;
     }
 
     public String getUserFirstSurename() {
