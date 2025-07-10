@@ -42,7 +42,7 @@ public class UserSeeder implements ApplicationListener<ContextRefreshedEvent> {
         User farmUser = new User();
         farmUser.setUserEmail(userEmail);
         farmUser.setUserPassword(passwordEncoder.encode("user123"));
-        farmUser.setUserName("John");
+        farmUser.setName("John");
         farmUser.setUserFirstSurename("Doe");
         farmUser.setRole(optionalRole.get());
         farmUser.setIsActive(true);
@@ -64,7 +64,7 @@ public class UserSeeder implements ApplicationListener<ContextRefreshedEvent> {
         // Datos Admin de la Corporación
         corpUser.setUserEmail(corpEmail);
         corpUser.setUserPassword(passwordEncoder.encode("corp123"));
-        corpUser.setUserName("Corp");
+        corpUser.setName("Corp");
         corpUser.setUserFirstSurename("Admin");
         corpUser.setRole(optionalRole.get());
         corpUser.setIsActive(true);

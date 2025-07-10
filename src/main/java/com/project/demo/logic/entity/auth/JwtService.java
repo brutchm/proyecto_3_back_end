@@ -72,7 +72,7 @@ public class JwtService {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    private Claims extractAllClaims(String token) {
+    public Claims extractAllClaims(String token) {
         return Jwts
                 .parserBuilder()
                 .setSigningKey(getSignInKey())
@@ -84,5 +84,20 @@ public class JwtService {
     private Key getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    /**
+     * Genera un token de registro temporal usando la clave principal.
+     * Le daremos una vida más corta (15 minutos) para seguridad.
+     */
+    public String generateRegistrationToken(Map<String, Object> claims) {
+        long registrationExpiration = 900000; // 15 minutos en milisegundos
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject((String) claims.get("email"))
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + registrationExpiration))
+                .signWith(getSignInKey(), SignatureAlgorithm.HS256) // USA LA CLAVE PRINCIPAL
+                .compact();
     }
 }

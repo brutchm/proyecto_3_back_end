@@ -38,7 +38,7 @@ public class AdminController {
         }
 
         var user = new User();
-        user.setUserName(newAdminUser.getUserName());
+        user.setName(newAdminUser.getName());
         user.setUserEmail(newAdminUser.getUserEmail());
         user.setUserPassword(passwordEncoder.encode(newAdminUser.getUserPassword()));
         user.setRole(optionalRole.get());
