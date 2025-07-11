@@ -67,9 +67,7 @@ public class User implements UserDetails {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role")
-    @JsonIgnore()
     private Role role;
-
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
