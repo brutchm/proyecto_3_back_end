@@ -87,7 +87,7 @@ public class UserRestController {
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
             User existingUser = optionalUser.get();
-            existingUser.setUserName(userDetails.getUserName());
+            existingUser.setName(userDetails.getName());
             existingUser.setUserFirstSurename(userDetails.getUserFirstSurename());
             existingUser.setUserSecondSurename(userDetails.getUserSecondSurename());
             existingUser.setIsActive(userDetails.getIsActive());
@@ -129,18 +129,11 @@ public class UserRestController {
      * Obtiene los detalles del usuario actualmente autenticado.
      * @return El objeto User del solicitante.
      */
+
     @GetMapping("/me")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> getAuthenticatedUser(HttpServletRequest request) {
+    public User authenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = (User) authentication.getPrincipal();
-
-        Optional<User> user = userRepository.findById(currentUser.getId());
-
-        if (user.isPresent()) {
-            return new GlobalResponseHandler().handleResponse("Authenticated user retrieved successfully", user.get(), HttpStatus.OK, request);
-        } else {
-            return new GlobalResponseHandler().handleResponse("Authenticated user not found in database", HttpStatus.NOT_FOUND, request);
-        }
+        return (User) authentication.getPrincipal();
     }
 }
