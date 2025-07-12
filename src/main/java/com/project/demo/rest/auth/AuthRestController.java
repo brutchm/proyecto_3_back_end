@@ -27,6 +27,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * Controlador REST para autenticación y recuperación de contraseña de usuarios.
+ * Incluye login, registro, registro de corporaciones y endpoints para recuperación de contraseña vía email.
+ */
 @RequestMapping("/auth")
 @RestController
 public class AuthRestController {
@@ -42,6 +46,11 @@ public class AuthRestController {
     private RoleRepository roleRepository;
 
 
+    @Autowired
+    private VerificationCodeService verificationCodeService;
+
+    @Autowired
+    private EmailService emailService;
 
     private final AuthenticationService authenticationService;
     private final JwtService jwtService;
@@ -53,10 +62,16 @@ public class AuthRestController {
         this.googleAuthService = googleAuthService;
     }
 
+
     // --- DTOs para el flujo de Google ---
     private record GoogleAuthRequest(String code) {}
     private record CompleteGoogleSignupRequest(String registrationToken, User userData) {}
 
+    /**
+     * Autentica un usuario y retorna un JWT si las credenciales son válidas.
+     * @param user Usuario con email y contraseña.
+     * @return LoginResponse con token JWT y datos del usuario autenticado.
+     */
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> authenticate(@RequestBody User user) {
@@ -77,6 +92,11 @@ public class AuthRestController {
         return ResponseEntity.ok(loginResponse);
     }
 
+    /**
+     * Registra un nuevo usuario estándar (rol USER).
+     * @param user Datos del usuario a registrar.
+     * @return Usuario registrado o error si el email ya existe.
+     */
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
         Optional<User> existingUser = userRepository.findByUserEmail(user.getUserEmail());
@@ -95,6 +115,74 @@ public class AuthRestController {
         return ResponseEntity.ok(savedUser);
     }
 
+    record PasswordResetRequest(String email) {}
+    record VerifyCodeRequest(String email, String code) {}
+    record ResetPasswordRequest(String email, String code, String newPassword) {}
+    public record MessageResponse(String message) {}
+
+    /**
+     * Solicita el envío de un código de verificación al email para recuperación de contraseña.
+     * @param request Objeto con el email del usuario.
+     * @return Mensaje de éxito o error si el email no existe.
+     */
+    @PostMapping("/reset-password/request")
+    public ResponseEntity<?> requestPasswordReset(@RequestBody PasswordResetRequest request) {
+        Optional<User> optionalUser = userRepository.findByUserEmail(request.email());
+        if (optionalUser.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email not found");
+        }
+
+        System.out.println(request.email());
+        String verificationCode = verificationCodeService.generateCode(request.email());
+        emailService.sendVerificationCode(request.email(), verificationCode);
+
+        return ResponseEntity.ok(new MessageResponse("Password reset code sent to your email"));
+    }
+
+    /**
+     * Verifica el código enviado al email del usuario para recuperación de contraseña.
+     * @param request Objeto con email y código recibido.
+     * @return Mensaje de éxito o error si el código es inválido o expiró.
+     */
+    @PostMapping("/reset-password/verify")
+    public ResponseEntity<?> verifyCode(@RequestBody VerifyCodeRequest request) {
+        boolean isValid = verificationCodeService.verifyCode(request.email(), request.code());
+        if (!isValid) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or expired code");
+        }
+        return ResponseEntity.ok(new MessageResponse("Code verified successfully"));
+    }
+
+    /**
+     * Permite restablecer la contraseña de un usuario si el código es válido.
+     * @param request Objeto con email, código y nueva contraseña.
+     * @return Mensaje de éxito o error si el código es inválido o expiró.
+     */
+    @PostMapping("/reset-password/reset")
+    public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordRequest request) {
+        Optional<User> optionalUser = userRepository.findByUserEmail(request.email());
+        if (optionalUser.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email not found");
+        }
+
+        boolean isValid = verificationCodeService.verifyCode(request.email(), request.code());
+        if (!isValid) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or expired code");
+        }
+
+        User user = optionalUser.get();
+        user.setUserPassword(passwordEncoder.encode(request.newPassword()));
+        userRepository.save(user);
+
+        return ResponseEntity.ok(new MessageResponse("Password reset successfully"));
+    }
+    
+    /**
+     * Registra un nuevo usuario corporativo (rol CORPORATION).
+     * @param user Datos del usuario corporativo.
+     * @param request HttpServletRequest para manejo de respuestas globales.
+     * @return Usuario corporativo registrado o error si los datos ya existen o faltan campos obligatorios.
+     */
     @PostMapping("/signup/corporation")
     public ResponseEntity<?> registerUserCorporation(@RequestBody User user, HttpServletRequest request) {
         Optional<User> existingUser = userRepository.findByUserEmail(user.getUserEmail());
