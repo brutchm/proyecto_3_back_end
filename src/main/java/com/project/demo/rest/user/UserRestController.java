@@ -73,35 +73,79 @@ public class UserRestController {
         return new GlobalResponseHandler().handleResponse("User updated successfully",
                 user, HttpStatus.OK, request);
     }
-
+    
     /**
-     * Actualiza los datos de un usuario existente.
-     * Un SUPER_ADMIN puede editar cualquier usuario.
-     * @param id El ID del usuario a actualizar.
-     * @param userDetails Los nuevos detalles para el usuario.
-     * @return El usuario con los datos actualizados.
+     * Actualiza el perfil del usuario autenticado.
+     *
+     * Este endpoint permite que un usuario autenticado edite sus propios datos personales y corporativos.
+     *
+     * Funcionalidades incluidas:
+     * - Verifica si el nuevo businessId está siendo usado por otro usuario. En caso afirmativo, retorna un error.
+     * - Verifica si el nuevo userEmail ya existe en la base de datos y pertenece a otro usuario. Si es así, retorna un error.
+     * - Actualiza todos los campos personales del usuario: nombre, apellidos, género, teléfono, etc.
+     * - Actualiza los campos corporativos: nombre de la empresa, misión, visión, ID, país, provincia, dirección y ubicación.
+     * - Si se incluye una nueva contraseña, esta se encripta antes de almacenarse.
+     * - Devuelve una respuesta estandarizada indicando éxito o conflicto, según corresponda.
+     *
+     * Solo se modifican los campos que han cambiado respecto a los datos actuales del usuario.
+     *
+     * @param userDetails Objeto con los nuevos datos que se desean actualizar.
+     * @param request Objeto HttpServletRequest utilizado para construir la respuesta.
+     * @return ResponseEntity con mensaje y estado HTTP según el resultado de la operación.
      */
-    @PutMapping("/{id}")
-    @PreAuthorize("hasRole('SUPER_ADMIN')")
-    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User userDetails, HttpServletRequest request) {
-        Optional<User> optionalUser = userRepository.findById(id);
-        if (optionalUser.isPresent()) {
-            User existingUser = optionalUser.get();
-            existingUser.setName(userDetails.getName());
-            existingUser.setUserFirstSurename(userDetails.getUserFirstSurename());
-            existingUser.setUserSecondSurename(userDetails.getUserSecondSurename());
-            existingUser.setIsActive(userDetails.getIsActive());
 
-            if (userDetails.getUserPassword() != null && !userDetails.getUserPassword().isEmpty()) {
-                existingUser.setUserPassword(passwordEncoder.encode(userDetails.getUserPassword()));
+    @PutMapping("/me")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> updateAuthenticatedUser(@RequestBody User userDetails, HttpServletRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User existingUser = (User) authentication.getPrincipal();
+        String newBusinessId = userDetails.getBusinessId();
+        if (newBusinessId != null && !newBusinessId.equals(existingUser.getBusinessId())) {
+            Optional<User> foundBusinessId = userRepository.findByBusinessId(newBusinessId);
+
+            if (foundBusinessId.isPresent()) {
+                return new GlobalResponseHandler().handleResponse(
+                        "El ID de Corporación '" + newBusinessId + "' ya está registrado por otro usuario.",
+                        HttpStatus.CONFLICT, request
+                );
+            } else {
+                existingUser.setBusinessId(newBusinessId);
             }
-
-            User updatedUser = userRepository.save(existingUser);
-            return new GlobalResponseHandler().handleResponse("User updated successfully", updatedUser, HttpStatus.OK, request);
-        } else {
-            return new GlobalResponseHandler().handleResponse("User id " + id + " not found", HttpStatus.NOT_FOUND, request);
         }
+        String newEmail = userDetails.getUserEmail();
+        if (newEmail != null && !newEmail.equalsIgnoreCase(existingUser.getUserEmail())) {
+            Optional<User> foundEmail = userRepository.findByUserEmail(newEmail);
+            if (foundEmail.isPresent() && !foundEmail.get().getId().equals(existingUser.getId())) {
+                return new GlobalResponseHandler().handleResponse(
+                        "Este correo electrónico '" + newEmail + "' ya está registrado por otro usuario.",
+                        HttpStatus.CONFLICT, request
+                );
+            } else {
+                existingUser.setUserEmail(newEmail);
+            }
+        }
+        // Campos personales
+        existingUser.setName(userDetails.getName());
+        existingUser.setUserFirstSurename(userDetails.getUserFirstSurename());
+        existingUser.setUserSecondSurename(userDetails.getUserSecondSurename());
+        existingUser.setUserGender(userDetails.getUserGender());
+        existingUser.setUserPhoneNumber(userDetails.getUserPhoneNumber());
+        // Campos corporativos
+        existingUser.setBusinessName(userDetails.getBusinessName());
+        existingUser.setBusinessMission(userDetails.getBusinessMission());
+        existingUser.setBusinessVision(userDetails.getBusinessVision());
+        existingUser.setBusinessId(userDetails.getBusinessId());
+        existingUser.setBusinessCountry(userDetails.getBusinessCountry());
+        existingUser.setBusinessStateProvince(userDetails.getBusinessStateProvince());
+        existingUser.setBusinessOtherDirections(userDetails.getBusinessOtherDirections());
+        existingUser.setBusinessLocation(userDetails.getBusinessLocation());
+        if (userDetails.getUserPassword() != null && !userDetails.getUserPassword().isEmpty()) {
+            existingUser.setUserPassword(passwordEncoder.encode(userDetails.getUserPassword()));
+        }
+        User updatedUser = userRepository.save(existingUser);
+        return new GlobalResponseHandler().handleResponse("Perfil actualizado correctamente", updatedUser, HttpStatus.OK, request);
     }
+
 
     /**
      * Elimina usuario por ID
