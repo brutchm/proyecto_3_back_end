@@ -2,6 +2,8 @@ package com.project.demo.rest.farm;
 
 import com.project.demo.logic.entity.farm.Farm;
 import com.project.demo.logic.entity.farm.FarmRepository;
+import com.project.demo.logic.entity.farm.FarmsTechnicalInformation;
+import com.project.demo.logic.entity.farm.FarmsTechnicalInformationRepository;
 import com.project.demo.logic.entity.user.User;
 import com.project.demo.logic.entity.userfarm.UserFarmId;
 import com.project.demo.logic.entity.userfarm.UserXFarm;
@@ -23,6 +25,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+record FarmCreationRequest(Farm farm, FarmsTechnicalInformation technicalInfo) {}
+
 /**
  * Controlador REST para gestionar las operaciones CRUD de las granjas (Farms).
  * Implementa lógica de negocio para la propiedad y el acceso a las granjas.
@@ -37,19 +41,28 @@ public class FarmRestController {
     @Autowired
     private UserXFarmRepository userXFarmRepository;
 
+    @Autowired
+    private FarmsTechnicalInformationRepository farmsTechnicalInformationRepository;
+
     /**
      * Crea una nueva granja y la asigna automáticamente al usuario autenticado.
-     * @param farm La información de la granja a crear.
-     * @return La granja recién creada.
+     * Si se envía información técnica, también la guarda.
+     * @param creationRequest Objeto que contiene la granja y su información técnica.
+     * @return La granja recién creada con su información técnica.
      */
-    @PostMapping
+    @PostMapping(consumes = "application/json", produces = "application/json")
     @PreAuthorize("hasAnyRole('USER', 'CORPORATION')")
-    public ResponseEntity<?> createFarm(@RequestBody Farm farm, HttpServletRequest request) {
+    public ResponseEntity<?> createFarm(@RequestBody FarmCreationRequest creationRequest, HttpServletRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = (User) authentication.getPrincipal();
 
+        Farm farm = creationRequest.farm();
+        FarmsTechnicalInformation technicalInfo = creationRequest.technicalInfo();
+
+        // Save the farm
         Farm savedFarm = farmRepository.save(farm);
 
+        // Link farm to the current user
         UserXFarm userFarmLink = new UserXFarm();
         userFarmLink.setId(new UserFarmId(savedFarm.getId(), currentUser.getId()));
         userFarmLink.setFarm(savedFarm);
@@ -57,7 +70,19 @@ public class FarmRestController {
         userFarmLink.setActive(true);
         userXFarmRepository.save(userFarmLink);
 
-        return new GlobalResponseHandler().handleResponse("Farm created and assigned successfully", savedFarm, HttpStatus.CREATED, request);
+        FarmsTechnicalInformation savedTechnicalInfo = null;
+        // Save technical information if provided
+        if (technicalInfo != null) {
+            technicalInfo.setFarm(savedFarm);
+            technicalInfo.setIsActive(true); // Assuming it should be active by default
+            savedTechnicalInfo = farmsTechnicalInformationRepository.save(technicalInfo);
+        }
+
+        // Return both farm and technical info in the response
+        java.util.Map<String, Object> responseBody = new java.util.HashMap<>();
+        responseBody.put("farm", savedFarm);
+        responseBody.put("technicalInfo", savedTechnicalInfo);
+        return new GlobalResponseHandler().handleResponse("Farm created and assigned successfully", responseBody, HttpStatus.CREATED, request);
     }
 
     /**
@@ -103,7 +128,14 @@ public class FarmRestController {
 
         Optional<Farm> farmOptional = farmRepository.findById(id);
         if (farmOptional.isPresent()) {
-            return new GlobalResponseHandler().handleResponse("Farm retrieved successfully", farmOptional.get(), HttpStatus.OK, request);
+            Farm farm = farmOptional.get();
+            Optional<FarmsTechnicalInformation> techInfoOptional = farmsTechnicalInformationRepository.findByFarmId(id);
+
+            java.util.Map<String, Object> responseBody = new java.util.HashMap<>();
+            responseBody.put("farm", farm);
+            responseBody.put("technicalInfo", techInfoOptional.orElse(null));
+
+            return new GlobalResponseHandler().handleResponse("Farm retrieved successfully", responseBody, HttpStatus.OK, request);
         } else {
             return new GlobalResponseHandler().handleResponse("Farm id " + id + " not found", HttpStatus.NOT_FOUND, request);
         }
@@ -117,7 +149,7 @@ public class FarmRestController {
      */
     @PutMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> updateFarm(@PathVariable Long id, @RequestBody Farm farmDetails, HttpServletRequest request) {
+    public ResponseEntity<?> updateFarm(@PathVariable Long id, @RequestBody FarmCreationRequest updateRequest, HttpServletRequest request) {
         if (!hasAccessToFarm(id)) {
             return new GlobalResponseHandler().handleResponse("User does not have access to this farm", HttpStatus.FORBIDDEN, request);
         }
@@ -125,6 +157,9 @@ public class FarmRestController {
         Optional<Farm> farmOptional = farmRepository.findById(id);
         if (farmOptional.isPresent()) {
             Farm existingFarm = farmOptional.get();
+            Farm farmDetails = updateRequest.farm();
+
+            // Update farm details
             existingFarm.setFarmName(farmDetails.getFarmName());
             existingFarm.setFarmCountry(farmDetails.getFarmCountry());
             existingFarm.setFarmStateProvince(farmDetails.getFarmStateProvince());
@@ -133,9 +168,31 @@ public class FarmRestController {
             existingFarm.setFarmSize(farmDetails.getFarmSize());
             existingFarm.setFarmMeasureUnit(farmDetails.getFarmMeasureUnit());
             existingFarm.setActive(farmDetails.isActive());
-
             Farm updatedFarm = farmRepository.save(existingFarm);
-            return new GlobalResponseHandler().handleResponse("Farm updated successfully", updatedFarm, HttpStatus.OK, request);
+
+            // Update technical information
+            FarmsTechnicalInformation technicalInfoDetails = updateRequest.technicalInfo();
+            FarmsTechnicalInformation savedTechnicalInfo = null;
+            if (technicalInfoDetails != null) {
+                Optional<FarmsTechnicalInformation> techInfoOptional = farmsTechnicalInformationRepository.findByFarmId(id);
+                FarmsTechnicalInformation existingTechInfo = techInfoOptional.orElse(new FarmsTechnicalInformation());
+                existingTechInfo.setFarm(updatedFarm);
+                existingTechInfo.setSoilPh(technicalInfoDetails.getSoilPh());
+                existingTechInfo.setSoilNutrients(technicalInfoDetails.getSoilNutrients());
+                existingTechInfo.setIrrigationSystem(technicalInfoDetails.getIrrigationSystem());
+                existingTechInfo.setIrrigationSystemType(technicalInfoDetails.getIrrigationSystemType());
+                existingTechInfo.setWaterAvailable(technicalInfoDetails.getWaterAvailable());
+                existingTechInfo.setWaterUsageType(technicalInfoDetails.getWaterUsageType());
+                existingTechInfo.setFertilizerPesticideUse(technicalInfoDetails.getFertilizerPesticideUse());
+                existingTechInfo.setIsActive(technicalInfoDetails.getIsActive());
+                savedTechnicalInfo = farmsTechnicalInformationRepository.save(existingTechInfo);
+            }
+
+            java.util.Map<String, Object> responseBody = new java.util.HashMap<>();
+            responseBody.put("farm", updatedFarm);
+            responseBody.put("technicalInfo", savedTechnicalInfo);
+
+            return new GlobalResponseHandler().handleResponse("Farm updated successfully", responseBody, HttpStatus.OK, request);
         } else {
             return new GlobalResponseHandler().handleResponse("Farm id " + id + " not found", HttpStatus.NOT_FOUND, request);
         }
@@ -155,9 +212,8 @@ public class FarmRestController {
 
         Optional<Farm> farmOptional = farmRepository.findById(id);
         if (farmOptional.isPresent()) {
-            // se deberían eliminar también las relaciones en user_x_farm.
             farmRepository.delete(farmOptional.get());
-            return new GlobalResponseHandler().handleResponse("Farm deleted successfully", farmOptional.get(), HttpStatus.OK, request);
+            return new GlobalResponseHandler().handleResponse("Farm and all associated data deleted successfully", farmOptional.get(), HttpStatus.OK, request);
         } else {
             return new GlobalResponseHandler().handleResponse("Farm id " + id + " not found", HttpStatus.NOT_FOUND, request);
         }
@@ -177,5 +233,28 @@ public class FarmRestController {
         }
 
         return userXFarmRepository.existsById(new UserFarmId(farmId, currentUser.getId()));
+    }
+
+    /**
+     * Obtiene todas las fincas asociadas al usuario autenticado (farmAdmin).
+     */
+    @GetMapping("/my-farms")
+    @PreAuthorize("hasAnyRole('USER', 'CORPORATION', 'FARM_ADMIN', 'SUPER_ADMIN')")
+    public ResponseEntity<?> getMyFarms(HttpServletRequest request) {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            User currentUser = (User) authentication.getPrincipal();
+            List<Farm> farms = farmRepository.findFarmsByUserId(currentUser.getId());
+            List<java.util.Map<String, Object>> result = farms.stream().map(farm -> {
+                Optional<FarmsTechnicalInformation> techInfoOptional = farmsTechnicalInformationRepository.findByFarmId(farm.getId());
+                java.util.Map<String, Object> farmData = new java.util.HashMap<>();
+                farmData.put("farm", farm);
+                farmData.put("technicalInfo", techInfoOptional.orElse(null));
+                return farmData;
+            }).toList();
+            return new GlobalResponseHandler().handleResponse("Farms retrieved successfully", result, HttpStatus.OK, request);
+        } catch (Exception e) {
+            return new GlobalResponseHandler().handleResponse("Error retrieving farms: " + e.getMessage(), null, HttpStatus.INTERNAL_SERVER_ERROR, request);
+        }
     }
 }
