@@ -17,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -179,5 +180,19 @@ public class UserRestController {
     public User authenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return (User) authentication.getPrincipal();
+    }
+
+/**
+ * PONER AQUI JAVA DOC
+ * */
+
+    @PreAuthorize("hasAnyRole('USER','SUPER_ADMIN')")
+    @GetMapping("/listcorporations")
+    public ResponseEntity<?> getAllCategoria(HttpServletRequest request) {
+        List<User> userCorporations= userRepository.findByRoleId(3L);//Rol Corporations
+        if (userCorporations.isEmpty()){
+            return new GlobalResponseHandler().handleResponse("No se encontraron usuarios corporativos registrados en el sistema",null,HttpStatus.NOT_FOUND,request);
+        }
+        return new GlobalResponseHandler().handleResponse("Lista con todos las usuarios corporativos registrados",userCorporations,HttpStatus.OK,request);
     }
 }
