@@ -115,15 +115,14 @@ public class AuthRestController {
                 return new GlobalResponseHandler().handleResponse("Role not found", null, HttpStatus.BAD_REQUEST, request);
             }
             user.setRole(optionalRole.get());
+            user.setIsActive(true);
             User savedUser = userRepository.save(user);
+
             return new GlobalResponseHandler().handleResponse("User registered successfully", savedUser, HttpStatus.OK, request);
         } catch (Exception e) {
             return new GlobalResponseHandler().handleResponse("Registration failed: " + e.getMessage(), null, HttpStatus.INTERNAL_SERVER_ERROR, request);
         }
-        user.setRole(optionalRole.get());
-        user.setIsActive(true);
-        User savedUser = userRepository.save(user);
-        return ResponseEntity.ok(savedUser);
+
     }
 
     record PasswordResetRequest(String email) {}
