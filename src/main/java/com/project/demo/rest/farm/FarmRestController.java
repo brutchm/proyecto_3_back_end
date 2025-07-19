@@ -22,7 +22,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 record FarmCreationRequest(Farm farm, FarmsTechnicalInformation technicalInfo) {}
@@ -79,7 +81,7 @@ public class FarmRestController {
         }
 
         // Return both farm and technical info in the response
-        java.util.Map<String, Object> responseBody = new java.util.HashMap<>();
+        Map<String, Object> responseBody = new HashMap<>();
         responseBody.put("farm", savedFarm);
         responseBody.put("technicalInfo", savedTechnicalInfo);
         return new GlobalResponseHandler().handleResponse("Farm created and assigned successfully", responseBody, HttpStatus.CREATED, request);
@@ -102,16 +104,24 @@ public class FarmRestController {
         User currentUser = (User) authentication.getPrincipal();
 
         if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_SUPER_ADMIN"))) {
-            Pageable pageable = PageRequest.of(page - 1, size);
-            Page<Farm> farmPage = farmRepository.findAll(pageable);
-            Meta meta = new Meta(request.getMethod(), request.getRequestURL().toString());
-            meta.setTotalPages(farmPage.getTotalPages());
-            meta.setTotalElements(farmPage.getTotalElements());
-            return new GlobalResponseHandler().handleResponse("All farms retrieved successfully", farmPage.getContent(), HttpStatus.OK, meta);
+            List<Farm> allFarms = farmRepository.findAll();
+            return new GlobalResponseHandler().handleResponse("All farms retrieved successfully", allFarms, HttpStatus.OK, request);
         } else {
             List<Farm> userFarms = farmRepository.findFarmsByUserId(currentUser.getId());
             return new GlobalResponseHandler().handleResponse("User farms retrieved successfully", userFarms, HttpStatus.OK, request);
         }
+
+//        if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_SUPER_ADMIN"))) {
+//            Pageable pageable = PageRequest.of(page - 1, size);
+//            Page<Farm> farmPage = farmRepository.findAll(pageable);
+//            Meta meta = new Meta(request.getMethod(), request.getRequestURL().toString());
+//            meta.setTotalPages(farmPage.getTotalPages());
+//            meta.setTotalElements(farmPage.getTotalElements());
+//            return new GlobalResponseHandler().handleResponse("All farms retrieved successfully", farmPage.getContent(), HttpStatus.OK, meta);
+//        } else {
+//            List<Farm> userFarms = farmRepository.findFarmsByUserId(currentUser.getId());
+//            return new GlobalResponseHandler().handleResponse("User farms retrieved successfully", userFarms, HttpStatus.OK, request);
+//        }
     }
 
     /**
@@ -131,7 +141,7 @@ public class FarmRestController {
             Farm farm = farmOptional.get();
             Optional<FarmsTechnicalInformation> techInfoOptional = farmsTechnicalInformationRepository.findByFarmId(id);
 
-            java.util.Map<String, Object> responseBody = new java.util.HashMap<>();
+            Map<String, Object> responseBody = new HashMap<>();
             responseBody.put("farm", farm);
             responseBody.put("technicalInfo", techInfoOptional.orElse(null));
 
@@ -144,7 +154,7 @@ public class FarmRestController {
     /**
      * Actualiza una granja existente, validando los permisos del usuario.
      * @param id El ID de la granja a actualizar.
-     * @param farmDetails Los nuevos datos para la granja.
+     * @param request Los nuevos datos para la granja.
      * @return La granja actualizada.
      */
     @PutMapping("/{id}")
@@ -188,7 +198,7 @@ public class FarmRestController {
                 savedTechnicalInfo = farmsTechnicalInformationRepository.save(existingTechInfo);
             }
 
-            java.util.Map<String, Object> responseBody = new java.util.HashMap<>();
+            Map<String, Object> responseBody = new HashMap<>();
             responseBody.put("farm", updatedFarm);
             responseBody.put("technicalInfo", savedTechnicalInfo);
 
@@ -245,9 +255,9 @@ public class FarmRestController {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             User currentUser = (User) authentication.getPrincipal();
             List<Farm> farms = farmRepository.findFarmsByUserId(currentUser.getId());
-            List<java.util.Map<String, Object>> result = farms.stream().map(farm -> {
+            List<Map<String, Object>> result = farms.stream().map(farm -> {
                 Optional<FarmsTechnicalInformation> techInfoOptional = farmsTechnicalInformationRepository.findByFarmId(farm.getId());
-                java.util.Map<String, Object> farmData = new java.util.HashMap<>();
+                Map<String, Object> farmData = new HashMap<>();
                 farmData.put("farm", farm);
                 farmData.put("technicalInfo", techInfoOptional.orElse(null));
                 return farmData;
