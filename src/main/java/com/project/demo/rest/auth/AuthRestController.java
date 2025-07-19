@@ -111,6 +111,7 @@ public class AuthRestController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Role not found");
         }
         user.setRole(optionalRole.get());
+        user.setIsActive(true);
         User savedUser = userRepository.save(user);
         return ResponseEntity.ok(savedUser);
     }
@@ -213,6 +214,7 @@ public class AuthRestController {
             return new GlobalResponseHandler().handleResponse("Debe ingresar los campos obligatorios.",user,HttpStatus.NOT_ACCEPTABLE,request);
 
         }else{
+            user.setIsActive(true);
             User savedUser = userRepository.save(user);
             return new GlobalResponseHandler().handleResponse("Usuario corporativo registrado exitosamente.",savedUser,HttpStatus.CREATED,request);
         }
@@ -267,6 +269,7 @@ public class AuthRestController {
             }
             newUser.setRole(role.get());
 
+            newUser.setIsActive(true);
             User savedUser = userRepository.save(newUser);
             return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
 
@@ -306,6 +309,7 @@ public class AuthRestController {
             }
             newUser.setRole(role.get());
 
+            newUser.setIsActive(true);
             User savedUser = userRepository.save(newUser);
             return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
 
