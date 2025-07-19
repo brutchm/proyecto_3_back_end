@@ -1,5 +1,6 @@
 package com.project.demo.logic.entity.userfarm;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.demo.logic.entity.farm.Farm;
 import com.project.demo.logic.entity.role.Role;
 import com.project.demo.logic.entity.user.User;
@@ -9,19 +10,22 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "user_x_farm")
 public class UserXFarm {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("userId")
+    @JoinColumn(name = "user_id")
+    @JsonIgnore
+    private User user;
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
 
     @EmbeddedId
     private UserFarmId id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @MapsId("farmId")
     @JoinColumn(name = "farm_id")
+    @JsonIgnore()
     private Farm farm;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("userId")
-    @JoinColumn(name = "user_id")
-    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_role")
@@ -41,8 +45,6 @@ public class UserXFarm {
     public void setId(UserFarmId id) { this.id = id; }
     public Farm getFarm() { return farm; }
     public void setFarm(Farm farm) { this.farm = farm; }
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
     public Role getEmployeeRole() { return employeeRole; }
     public void setEmployeeRole(Role employeeRole) { this.employeeRole = employeeRole; }
     public LocalDateTime getCreatedAt() { return createdAt; }
