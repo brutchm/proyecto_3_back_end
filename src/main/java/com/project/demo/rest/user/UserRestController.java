@@ -17,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -179,5 +180,33 @@ public class UserRestController {
     public User authenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return (User) authentication.getPrincipal();
+    }
+
+
+    /**
+     * Obtiene la lista de todos los usuarios corporativos registrados en el sistema.
+     *
+     * Este endpoint es accesible únicamente por usuarios con los roles USER o SUPER_ADMIN.
+     *
+     * @param request el objeto HttpServletRequest que contiene información de la solicitud HTTP.
+     * @return una ResponseEntity que contiene:
+     *         - Un mensaje de éxito y la lista de usuarios corporativos si existen.
+     *         - Un mensaje de error con estado 404 NOT_FOUND si no se encuentran usuarios corporativos registrados.
+     *
+     * @see User
+     * @see GlobalResponseHandler
+     * @see org.springframework.security.access.prepost.PreAuthorize
+     * @see org.springframework.web.bind.annotation.GetMapping
+     */
+
+
+    @PreAuthorize("hasAnyRole('USER','SUPER_ADMIN')")
+    @GetMapping("/listcorporations")
+    public ResponseEntity<?> getAllCorporations(HttpServletRequest request) {
+        List<User> userCorporations= userRepository.findByRoleId(3L);//Rol Corporations
+        if (userCorporations.isEmpty()){
+            return new GlobalResponseHandler().handleResponse("No se encontraron usuarios corporativos registrados en el sistema",null,HttpStatus.NOT_FOUND,request);
+        }
+        return new GlobalResponseHandler().handleResponse("Lista con todos las usuarios corporativos registrados",userCorporations,HttpStatus.OK,request);
     }
 }

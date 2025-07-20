@@ -16,4 +16,7 @@ public interface UserRepository extends JpaRepository<User, Long>  {
     Optional<User> findByBusinessId(String businessId);
 
     Optional<User> findByUserEmail(String userEmail);
+
+    @Query("select u from User u where u.role.id=?1 and u.isActive=true")
+    List<User> findByRoleId(Long roleId);
 }
