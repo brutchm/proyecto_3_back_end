@@ -119,6 +119,37 @@ public class AnimalGroupHistoryRestController {
         }
     }
 
+    /**
+     * Elimina un registro de historial existente.
+     * @param groupId El ID del grupo padre.
+     * @param historyId El ID del registro de historial.
+     * @return Confirmación de la eliminación.
+     */
+    @DeleteMapping("/{historyId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> deleteHistory(@PathVariable Long groupId, @PathVariable Long historyId, HttpServletRequest request) {
+        Optional<AnimalGroup> optionalGroup = animalGroupRepository.findById(groupId);
+        if (optionalGroup.isEmpty()) {
+            return new GlobalResponseHandler().handleResponse("Animal Group with id " + groupId + " not found", HttpStatus.NOT_FOUND, request);
+        }
+
+        if (!hasAccessToFarm(optionalGroup.get().getFarm().getId())) {
+            return new GlobalResponseHandler().handleResponse("Access Denied", HttpStatus.FORBIDDEN, request);
+        }
+
+        Optional<AnimalGroupHistory> optionalHistory = historyRepository.findById(historyId);
+        if (optionalHistory.isPresent()) {
+            AnimalGroupHistory history = optionalHistory.get();
+            if (!history.getAnimalGroup().getId().equals(groupId)) {
+                return new GlobalResponseHandler().handleResponse("History record does not belong to the specified animal group", HttpStatus.BAD_REQUEST, request);
+            }
+            historyRepository.delete(history);
+            return new GlobalResponseHandler().handleResponse("History entry deleted successfully", null, HttpStatus.OK, request);
+        } else {
+            return new GlobalResponseHandler().handleResponse("History entry with id " + historyId + " not found", HttpStatus.NOT_FOUND, request);
+        }
+    }
+
     private boolean hasAccessToFarm(Long farmId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = (User) authentication.getPrincipal();

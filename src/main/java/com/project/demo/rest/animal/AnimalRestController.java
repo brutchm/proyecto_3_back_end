@@ -8,6 +8,7 @@ import com.project.demo.logic.entity.http.GlobalResponseHandler;
 import com.project.demo.logic.entity.user.User;
 import com.project.demo.logic.entity.userfarm.UserFarmId;
 import com.project.demo.logic.entity.userfarm.UserXFarmRepository;
+import com.project.demo.logic.entity.animal.AnimalGroupRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,6 +36,8 @@ public class AnimalRestController {
 
     @Autowired
     private UserXFarmRepository userXFarmRepository;
+    @Autowired
+    private AnimalGroupRepository animalGroupRepository;
 
     /**
      * Crea un nuevo registro de animal dentro de una granja específica.
