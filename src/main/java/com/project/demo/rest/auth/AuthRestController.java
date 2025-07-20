@@ -105,21 +105,24 @@ public class AuthRestController {
         try {
             Optional<User> existingUser = userRepository.findByUserEmail(user.getUserEmail());
             if (existingUser.isPresent()) {
-                return new GlobalResponseHandler().handleResponse("Email already in use", null, HttpStatus.CONFLICT, request);
+                return new GlobalResponseHandler().handleResponse("Correo electronico actualmente en uso", null, HttpStatus.CONFLICT, request);
             }
 
             user.setUserPassword(passwordEncoder.encode(user.getUserPassword()));
             Optional<Role> optionalRole = roleRepository.findByRoleName(RoleEnum.USER);
 
             if (optionalRole.isEmpty()) {
-                return new GlobalResponseHandler().handleResponse("Role not found", null, HttpStatus.BAD_REQUEST, request);
+                return new GlobalResponseHandler().handleResponse("Rol no encontrado", null, HttpStatus.BAD_REQUEST, request);
             }
             user.setRole(optionalRole.get());
+            user.setIsActive(true);
             User savedUser = userRepository.save(user);
-            return new GlobalResponseHandler().handleResponse("User registered successfully", savedUser, HttpStatus.OK, request);
+
+            return new GlobalResponseHandler().handleResponse("Usuario registrado correctamente", savedUser, HttpStatus.OK, request);
         } catch (Exception e) {
-            return new GlobalResponseHandler().handleResponse("Registration failed: " + e.getMessage(), null, HttpStatus.INTERNAL_SERVER_ERROR, request);
+            return new GlobalResponseHandler().handleResponse("El registro fallo: " + e.getMessage(), null, HttpStatus.INTERNAL_SERVER_ERROR, request);
         }
+
     }
 
     record PasswordResetRequest(String email) {}
@@ -137,14 +140,14 @@ public class AuthRestController {
         try {
             Optional<User> optionalUser = userRepository.findByUserEmail(req.email());
             if (optionalUser.isEmpty()) {
-                return new GlobalResponseHandler().handleResponse("Email not found", null, HttpStatus.NOT_FOUND, request);
+                return new GlobalResponseHandler().handleResponse("Correo electronico no encontrado", null, HttpStatus.NOT_FOUND, request);
             }
 
             System.out.println(req.email());
             String verificationCode = verificationCodeService.generateCode(req.email());
             emailService.sendVerificationCode(req.email(), verificationCode);
 
-            return new GlobalResponseHandler().handleResponse("Password reset code sent to your email", new MessageResponse("Password reset code sent to your email"), HttpStatus.OK, request);
+            return new GlobalResponseHandler().handleResponse("Codigo de reseteo de contraseña enviado a tu correo electronico", new MessageResponse("Codigo de reseteo de contraseña enviado a tu correo electronico"), HttpStatus.OK, request);
         } catch (Exception e) {
             return new GlobalResponseHandler().handleResponse("Password reset request failed: " + e.getMessage(), null, HttpStatus.INTERNAL_SERVER_ERROR, request);
         }
@@ -178,7 +181,7 @@ public class AuthRestController {
         try {
             Optional<User> optionalUser = userRepository.findByUserEmail(req.email());
             if (optionalUser.isEmpty()) {
-                return new GlobalResponseHandler().handleResponse("Email not found", null, HttpStatus.NOT_FOUND, request);
+                return new GlobalResponseHandler().handleResponse("Correo electronico no encontrado", null, HttpStatus.NOT_FOUND, request);
             }
 
             boolean isValid = verificationCodeService.verifyCode(req.email(), req.code());
@@ -232,6 +235,7 @@ public class AuthRestController {
             return new GlobalResponseHandler().handleResponse("Debe ingresar los campos obligatorios.",user,HttpStatus.NOT_ACCEPTABLE,request);
 
         }else{
+            user.setIsActive(true);
             User savedUser = userRepository.save(user);
             return new GlobalResponseHandler().handleResponse("Usuario corporativo registrado exitosamente.",savedUser,HttpStatus.CREATED,request);
         }
@@ -286,6 +290,7 @@ public class AuthRestController {
             }
             newUser.setRole(role.get());
 
+            newUser.setIsActive(true);
             User savedUser = userRepository.save(newUser);
             return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
 
@@ -310,10 +315,10 @@ public class AuthRestController {
             String email = claims.getSubject();
 
             if (userRepository.findByUserEmail(email).isPresent()) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("Este correo ya fue registrado.");
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("message", "Este correo ya fue registrado."));
             }
             if (userRepository.findByBusinessId(request.userData().getBusinessId()).isPresent()) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("La cédula indicada ya se encuentra en uso.");
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("message","La identificación empresarial indicada ya se encuentra en uso."));
             }
 
             User newUser = request.userData();
@@ -325,6 +330,7 @@ public class AuthRestController {
             }
             newUser.setRole(role.get());
 
+            newUser.setIsActive(true);
             User savedUser = userRepository.save(newUser);
             return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
 
