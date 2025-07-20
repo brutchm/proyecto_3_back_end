@@ -74,22 +74,25 @@ public class AuthRestController {
      */
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> authenticate(@RequestBody User user) {
-        System.out.println(user.getUserEmail());
-        System.out.println(user.getUserPassword());
-        User authenticatedUser = authenticationService.authenticate(user);
+    public ResponseEntity<?> authenticate(@RequestBody User user, HttpServletRequest request) {
+        try {
+            System.out.println(user.getUserEmail());
+            System.out.println(user.getUserPassword());
+            User authenticatedUser = authenticationService.authenticate(user);
 
-        String jwtToken = jwtService.generateToken((UserDetails) authenticatedUser);
+            String jwtToken = jwtService.generateToken((UserDetails) authenticatedUser);
 
-        LoginResponse loginResponse = new LoginResponse();
-        loginResponse.setToken(jwtToken);
-        loginResponse.setExpiresIn(jwtService.getExpirationTime());
+            LoginResponse loginResponse = new LoginResponse();
+            loginResponse.setToken(jwtToken);
+            loginResponse.setExpiresIn(jwtService.getExpirationTime());
 
-        Optional<User> foundedUser = userRepository.findByUserEmail(user.getUserEmail());
+            Optional<User> foundedUser = userRepository.findByUserEmail(user.getUserEmail());
+            foundedUser.ifPresent(loginResponse::setAuthUser);
 
-        foundedUser.ifPresent(loginResponse::setAuthUser);
-
-        return ResponseEntity.ok(loginResponse);
+            return new GlobalResponseHandler().handleResponse("Login successful", loginResponse, HttpStatus.OK, request);
+        } catch (Exception e) {
+            return new GlobalResponseHandler().handleResponse("Login failed: " + e.getMessage(), null, HttpStatus.UNAUTHORIZED, request);
+        }
     }
 
     /**
@@ -98,21 +101,25 @@ public class AuthRestController {
      * @return Usuario registrado o error si el email ya existe.
      */
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@RequestBody User user) {
-        Optional<User> existingUser = userRepository.findByUserEmail(user.getUserEmail());
-        if (existingUser.isPresent()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Email already in use");
-        }
+    public ResponseEntity<?> registerUser(@RequestBody User user, HttpServletRequest request) {
+        try {
+            Optional<User> existingUser = userRepository.findByUserEmail(user.getUserEmail());
+            if (existingUser.isPresent()) {
+                return new GlobalResponseHandler().handleResponse("Email already in use", null, HttpStatus.CONFLICT, request);
+            }
 
-        user.setUserPassword(passwordEncoder.encode(user.getUserPassword()));
-        Optional<Role> optionalRole = roleRepository.findByRoleName(RoleEnum.USER);
+            user.setUserPassword(passwordEncoder.encode(user.getUserPassword()));
+            Optional<Role> optionalRole = roleRepository.findByRoleName(RoleEnum.USER);
 
-        if (optionalRole.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Role not found");
+            if (optionalRole.isEmpty()) {
+                return new GlobalResponseHandler().handleResponse("Role not found", null, HttpStatus.BAD_REQUEST, request);
+            }
+            user.setRole(optionalRole.get());
+            User savedUser = userRepository.save(user);
+            return new GlobalResponseHandler().handleResponse("User registered successfully", savedUser, HttpStatus.OK, request);
+        } catch (Exception e) {
+            return new GlobalResponseHandler().handleResponse("Registration failed: " + e.getMessage(), null, HttpStatus.INTERNAL_SERVER_ERROR, request);
         }
-        user.setRole(optionalRole.get());
-        User savedUser = userRepository.save(user);
-        return ResponseEntity.ok(savedUser);
     }
 
     record PasswordResetRequest(String email) {}
@@ -126,17 +133,21 @@ public class AuthRestController {
      * @return Mensaje de éxito o error si el email no existe.
      */
     @PostMapping("/reset-password/request")
-    public ResponseEntity<?> requestPasswordReset(@RequestBody PasswordResetRequest request) {
-        Optional<User> optionalUser = userRepository.findByUserEmail(request.email());
-        if (optionalUser.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email not found");
+    public ResponseEntity<?> requestPasswordReset(@RequestBody PasswordResetRequest req, HttpServletRequest request) {
+        try {
+            Optional<User> optionalUser = userRepository.findByUserEmail(req.email());
+            if (optionalUser.isEmpty()) {
+                return new GlobalResponseHandler().handleResponse("Email not found", null, HttpStatus.NOT_FOUND, request);
+            }
+
+            System.out.println(req.email());
+            String verificationCode = verificationCodeService.generateCode(req.email());
+            emailService.sendVerificationCode(req.email(), verificationCode);
+
+            return new GlobalResponseHandler().handleResponse("Password reset code sent to your email", new MessageResponse("Password reset code sent to your email"), HttpStatus.OK, request);
+        } catch (Exception e) {
+            return new GlobalResponseHandler().handleResponse("Password reset request failed: " + e.getMessage(), null, HttpStatus.INTERNAL_SERVER_ERROR, request);
         }
-
-        System.out.println(request.email());
-        String verificationCode = verificationCodeService.generateCode(request.email());
-        emailService.sendVerificationCode(request.email(), verificationCode);
-
-        return ResponseEntity.ok(new MessageResponse("Password reset code sent to your email"));
     }
 
     /**
@@ -145,12 +156,16 @@ public class AuthRestController {
      * @return Mensaje de éxito o error si el código es inválido o expiró.
      */
     @PostMapping("/reset-password/verify")
-    public ResponseEntity<?> verifyCode(@RequestBody VerifyCodeRequest request) {
-        boolean isValid = verificationCodeService.verifyCode(request.email(), request.code());
-        if (!isValid) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or expired code");
+    public ResponseEntity<?> verifyCode(@RequestBody VerifyCodeRequest req, HttpServletRequest request) {
+        try {
+            boolean isValid = verificationCodeService.verifyCode(req.email(), req.code());
+            if (!isValid) {
+                return new GlobalResponseHandler().handleResponse("Invalid or expired code", null, HttpStatus.BAD_REQUEST, request);
+            }
+            return new GlobalResponseHandler().handleResponse("Code verified successfully", new MessageResponse("Code verified successfully"), HttpStatus.OK, request);
+        } catch (Exception e) {
+            return new GlobalResponseHandler().handleResponse("Code verification failed: " + e.getMessage(), null, HttpStatus.INTERNAL_SERVER_ERROR, request);
         }
-        return ResponseEntity.ok(new MessageResponse("Code verified successfully"));
     }
 
     /**
@@ -159,22 +174,26 @@ public class AuthRestController {
      * @return Mensaje de éxito o error si el código es inválido o expiró.
      */
     @PostMapping("/reset-password/reset")
-    public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordRequest request) {
-        Optional<User> optionalUser = userRepository.findByUserEmail(request.email());
-        if (optionalUser.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email not found");
+    public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordRequest req, HttpServletRequest request) {
+        try {
+            Optional<User> optionalUser = userRepository.findByUserEmail(req.email());
+            if (optionalUser.isEmpty()) {
+                return new GlobalResponseHandler().handleResponse("Email not found", null, HttpStatus.NOT_FOUND, request);
+            }
+
+            boolean isValid = verificationCodeService.verifyCode(req.email(), req.code());
+            if (!isValid) {
+                return new GlobalResponseHandler().handleResponse("Invalid or expired code", null, HttpStatus.BAD_REQUEST, request);
+            }
+
+            User user = optionalUser.get();
+            user.setUserPassword(passwordEncoder.encode(req.newPassword()));
+            userRepository.save(user);
+
+            return new GlobalResponseHandler().handleResponse("Password reset successfully", new MessageResponse("Password reset successfully"), HttpStatus.OK, request);
+        } catch (Exception e) {
+            return new GlobalResponseHandler().handleResponse("Password reset failed: " + e.getMessage(), null, HttpStatus.INTERNAL_SERVER_ERROR, request);
         }
-
-        boolean isValid = verificationCodeService.verifyCode(request.email(), request.code());
-        if (!isValid) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or expired code");
-        }
-
-        User user = optionalUser.get();
-        user.setUserPassword(passwordEncoder.encode(request.newPassword()));
-        userRepository.save(user);
-
-        return ResponseEntity.ok(new MessageResponse("Password reset successfully"));
     }
     
     /**

@@ -43,3 +43,4 @@ replay_pid*
 
 src/main/resources/application.properties
 build/resources/main/application.properties
+src/main/resources/AgriSync.sql
