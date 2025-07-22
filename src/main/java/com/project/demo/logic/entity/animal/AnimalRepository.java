@@ -8,6 +8,7 @@ import java.util.Optional;
 @Repository
 public interface AnimalRepository extends JpaRepository<Animal, Long> {
     List<Animal> findByFarmId(Long farmId);
+    List<Animal> findByFarmIdAndAnimalGroupId(Long farmId, Long groupId);
 
     Optional<Animal> findByIdAndFarmId(Long animalId, Long farmId);
 }
