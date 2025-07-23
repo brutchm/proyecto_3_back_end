@@ -1,5 +1,6 @@
 package com.project.demo.logic.entity.animal;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.project.demo.logic.entity.farm.Farm;
 import com.project.demo.logic.entity.user.User;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -28,7 +29,7 @@ public class AnimalGroup {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "farm_id", nullable = false)
-    @JsonIgnore
+    @JsonBackReference
     private Farm farm;
 
     @Column(name = "group_name", nullable = false)

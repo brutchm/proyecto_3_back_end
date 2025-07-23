@@ -1,17 +1,34 @@
 package com.project.demo.logic.entity.farm;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.project.demo.logic.entity.animal.AnimalGroup;
 import com.project.demo.logic.entity.userfarm.UserXFarm;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "farms")
+
 public class Farm {
+    @OneToMany(mappedBy = "farm", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<AnimalGroup> animalGroups = new ArrayList<>();
+
     @OneToMany(mappedBy = "farm", cascade = CascadeType.ALL, orphanRemoval = true)
     @com.fasterxml.jackson.annotation.JsonIgnore
     private Set<UserXFarm> userLinks;
+
+    public List<AnimalGroup> getAnimalGroups() {
+        return animalGroups;
+    }
+
+    public void setAnimalGroups(List<AnimalGroup> animalGroups) {
+        this.animalGroups = animalGroups;
+    }
+
     public Set<UserXFarm> getUserLinks() {
         return userLinks;
     }
