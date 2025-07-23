@@ -49,12 +49,12 @@ public class AnimalRestController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> createAnimal(@PathVariable Long farmId, @RequestBody Animal animal, HttpServletRequest request) {
         if (!hasAccessToFarm(farmId)) {
-            return new GlobalResponseHandler().handleResponse("Access Denied to farm " + farmId, HttpStatus.FORBIDDEN, request);
+            return new GlobalResponseHandler().handleResponse("Acceso denegado a la Finca " + farmId, HttpStatus.FORBIDDEN, request);
         }
 
         Optional<Farm> farm = farmRepository.findById(farmId);
         if (farm.isEmpty()) {
-            return new GlobalResponseHandler().handleResponse("Farm with id " + farmId + " not found", HttpStatus.NOT_FOUND, request);
+            return new GlobalResponseHandler().handleResponse("Finca con código " + farmId + " no fue encontrada", HttpStatus.NOT_FOUND, request);
         }
 
         animal.setFarm(farm.get());
@@ -63,7 +63,7 @@ public class AnimalRestController {
         animal.setUser(currentUser);
 
         Animal savedAnimal = animalRepository.save(animal);
-        return new GlobalResponseHandler().handleResponse("Animal created successfully", savedAnimal, HttpStatus.CREATED, request);
+        return new GlobalResponseHandler().handleResponse("Animal creado correctamente", savedAnimal, HttpStatus.CREATED, request);
     }
 
     /**
@@ -75,7 +75,7 @@ public class AnimalRestController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getAnimalsByFarm(@PathVariable Long farmId, HttpServletRequest request) {
         if (!hasAccessToFarm(farmId)) {
-            return new GlobalResponseHandler().handleResponse("Access Denied to farm " + farmId, HttpStatus.FORBIDDEN, request);
+            return new GlobalResponseHandler().handleResponse("Acceso denegado a la Finca " + farmId, HttpStatus.FORBIDDEN, request);
         }
 
         List<Animal> animals = animalRepository.findByFarmId(farmId);
@@ -164,4 +164,34 @@ public class AnimalRestController {
         }
         return userXFarmRepository.existsById(new UserFarmId(farmId, currentUser.getId()));
     }
+
+    /**
+     * Obtiene la lista de animales que pertenecen a un grupo específico dentro de una finca.
+     *
+     * Este endpoint requiere autenticación previa. Se valida si el usuario tiene acceso a la finca indicada.
+     * Si no tiene acceso, se devuelve un error 403. Si tiene acceso, se retornan todos los animales asociados
+     * al grupo especificado dentro de esa finca.
+     *
+     * @param farmId ID de la finca a la que pertenece el grupo.
+     * @param groupId ID del grupo del cual se desean listar los animales.
+     * @param request Objeto HttpServletRequest utilizado para el manejo de la respuesta global.
+     * @return ResponseEntity con un mensaje de éxito y la lista de animales del grupo si se tiene acceso,
+     *         o un mensaje de error si el acceso es denegado.
+     */
+    @GetMapping("/group/{groupId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> getAnimalsByGroup(
+            @PathVariable Long farmId,
+            @PathVariable Long groupId,
+            HttpServletRequest request
+    ) {
+        if (!hasAccessToFarm(farmId)) {
+            return new GlobalResponseHandler().handleResponse("Acceso denegado a la Finca " + farmId, HttpStatus.FORBIDDEN, request);
+        }
+
+        List<Animal> animals = animalRepository.findByFarmIdAndAnimalGroupId(farmId, groupId);
+        return new GlobalResponseHandler().handleResponse("Animales del grupo " + groupId + " recuperados con éxito", animals, HttpStatus.OK, request);
+    }
+
+
 }
