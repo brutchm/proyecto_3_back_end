@@ -1,15 +1,31 @@
 package com.project.demo.logic.entity.crop;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.project.demo.logic.entity.user.User;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import java.time.LocalDateTime;
 
+/**
+ * @class Crop
+ * @description
+ * Entidad que representa un cultivo personalizado creado por un usuario.
+ * Cada registro de cultivo está directamente asociado a un FarmAdmin específico.
+ */
 @Entity
 @Table(name = "crops")
 public class Crop {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
+    private User user;
 
     @Column(name = "crop_name", nullable = false)
     private String cropName;
@@ -23,18 +39,22 @@ public class Crop {
     @Column(name = "crop_variety", length = 100)
     private String cropVariety;
 
-    @Column(name = "created_at", updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @CreationTimestamp
+    @Column(updatable = false, name = "created_at")
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
+    @UpdateTimestamp
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name = "isActive", columnDefinition = "TINYINT(1) DEFAULT 1")
-    private boolean isActive;
+    @Column(name = "isActive")
+    private Boolean isActive = true;
 
     // Getters and Setters
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
     public String getCropName() { return cropName; }
     public void setCropName(String cropName) { this.cropName = cropName; }
     public String getCropPicture() { return cropPicture; }
@@ -47,6 +67,10 @@ public class Crop {
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
-    public boolean isActive() { return isActive; }
-    public void setActive(boolean active) { isActive = active; }
+    public Boolean getIsActive() {
+        return isActive;
+    }
+    public void setIsActive(Boolean active) {
+        isActive = active;
+    }
 }

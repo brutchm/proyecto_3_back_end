@@ -10,13 +10,13 @@ import java.util.Objects;
 public class CropsManagementId implements Serializable {
 
     @Column(name = "id_crop")
-    private Integer cropId;
+    private Long cropId;
 
     @Column(name = "id_farm")
-    private Integer farmId;
+    private Long farmId;
 
     @Column(name = "id_action")
-    private Integer actionId;
+    private Long actionId;
 
     @Column(name = "action_date")
     private LocalDateTime actionDate;
@@ -24,7 +24,7 @@ public class CropsManagementId implements Serializable {
     // Constructores, Getters, Setters, hashCode y equals
     public CropsManagementId() {}
 
-    public CropsManagementId(Integer cropId, Integer farmId, Integer actionId, LocalDateTime actionDate) {
+    public CropsManagementId(Long cropId, Long farmId, Long actionId, LocalDateTime actionDate) {
         this.cropId = cropId;
         this.farmId = farmId;
         this.actionId = actionId;
@@ -42,5 +42,37 @@ public class CropsManagementId implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(cropId, farmId, actionId, actionDate);
+    }
+
+    public Long getCropId() {
+        return cropId;
+    }
+
+    public void setCropId(Long cropId) {
+        this.cropId = cropId;
+    }
+
+    public Long getFarmId() {
+        return farmId;
+    }
+
+    public void setFarmId(Long farmId) {
+        this.farmId = farmId;
+    }
+
+    public Long getActionId() {
+        return actionId;
+    }
+
+    public void setActionId(Long actionId) {
+        this.actionId = actionId;
+    }
+
+    public LocalDateTime getActionDate() {
+        return actionDate;
+    }
+
+    public void setActionDate(LocalDateTime actionDate) {
+        this.actionDate = actionDate;
     }
 }

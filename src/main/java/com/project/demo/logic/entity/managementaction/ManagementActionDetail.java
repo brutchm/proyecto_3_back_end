@@ -9,7 +9,7 @@ public class ManagementActionDetail {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "action_id", nullable = false)
@@ -37,8 +37,8 @@ public class ManagementActionDetail {
     private boolean isActive;
 
     // Getters and Setters
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
     public ManagementAction getAction() { return action; }
     public void setAction(ManagementAction action) { this.action = action; }
     public String getMeasureUnit() { return measureUnit; }

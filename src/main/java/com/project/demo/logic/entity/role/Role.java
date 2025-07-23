@@ -9,10 +9,11 @@ public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
-    @Column(name = "role_name", length = 100, nullable = false)
-    private String roleName;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role_name", length = 100, nullable = false, unique = true)
+    private RoleEnum roleName;
 
     @Column(name = "role_description", length = 100)
     private String roleDescription;
@@ -27,19 +28,19 @@ public class Role {
     private boolean isActive;
 
     // Getters and Setters
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getRoleName() {
+    public RoleEnum getRoleName() {
         return roleName;
     }
 
-    public void setRoleName(String roleName) {
+    public void setRoleName(RoleEnum roleName) {
         this.roleName = roleName;
     }
 
