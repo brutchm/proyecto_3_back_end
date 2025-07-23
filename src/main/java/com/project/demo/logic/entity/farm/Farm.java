@@ -1,11 +1,41 @@
 package com.project.demo.logic.entity.farm;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.project.demo.logic.entity.animal.AnimalGroup;
+import com.project.demo.logic.entity.userfarm.UserXFarm;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "farms")
+
 public class Farm {
+    @OneToMany(mappedBy = "farm", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<AnimalGroup> animalGroups = new ArrayList<>();
+
+    @OneToMany(mappedBy = "farm", cascade = CascadeType.ALL, orphanRemoval = true)
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    private Set<UserXFarm> userLinks;
+
+    public List<AnimalGroup> getAnimalGroups() {
+        return animalGroups;
+    }
+
+    public void setAnimalGroups(List<AnimalGroup> animalGroups) {
+        this.animalGroups = animalGroups;
+    }
+
+    public Set<UserXFarm> getUserLinks() {
+        return userLinks;
+    }
+
+    public void setUserLinks(Set<UserXFarm> userLinks) {
+        this.userLinks = userLinks;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,6 +72,11 @@ public class Farm {
     @Column(name = "isActive", columnDefinition = "TINYINT(1) DEFAULT 1")
     private boolean isActive;
 
+    @OneToOne(mappedBy = "farm", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonManagedReference("farm-technicalInfo")
+    private FarmsTechnicalInformation technicalInformation;
+
+
     // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -65,4 +100,13 @@ public class Farm {
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
     public boolean isActive() { return isActive; }
     public void setActive(boolean active) { isActive = active; }
+
+    public FarmsTechnicalInformation getTechnicalInformation() {
+        return technicalInformation;
+    }
+
+    public void setTechnicalInformation(FarmsTechnicalInformation technicalInformation) {
+        this.technicalInformation = technicalInformation;
+    }
+
 }

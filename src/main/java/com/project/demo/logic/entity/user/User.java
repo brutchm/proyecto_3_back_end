@@ -1,7 +1,10 @@
 package com.project.demo.logic.entity.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.demo.logic.entity.role.Role;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -42,7 +45,7 @@ public class User implements UserDetails {
     private String businessLocation;
 
     @Column(name = "user_name", length = 100)
-    private String userName;
+    private String name;
 
     @Column(name = "user_first_surename", length = 100)
     private String userFirstSurename;
@@ -59,17 +62,19 @@ public class User implements UserDetails {
     @Column(name = "user_email", length = 150)
     private String userEmail;
 
-    @Column(name = "user_password", nullable = false, length = 255)
+    @Column(name = "user_password", length = 255)
     private String userPassword;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role")
     private Role role;
 
-    @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @CreationTimestamp
+    @Column(updatable = false, name = "created_at")
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
+    @UpdateTimestamp
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     @Column(name = "isActive")
@@ -83,32 +88,32 @@ public class User implements UserDetails {
 
     @Override
     public String getPassword() {
-        return "";
+        return this.userPassword;
     }
 
     @Override
     public String getUsername() {
-        return "";
+        return this.userEmail;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 
     // Getters y Setters
@@ -185,12 +190,12 @@ public class User implements UserDetails {
         this.businessLocation = businessLocation;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getName() {
+        return name;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setName(String userName) {
+        this.name = userName;
     }
 
     public String getUserFirstSurename() {
