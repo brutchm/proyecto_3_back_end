@@ -1,9 +1,16 @@
 package com.project.demo.logic.entity.animal;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.project.demo.logic.entity.farm.Farm;
 import com.project.demo.logic.entity.user.User;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "animal_groups")
@@ -13,12 +20,16 @@ public class AnimalGroup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
     private User user;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "farm_id", nullable = false)
+    @JsonBackReference
     private Farm farm;
 
     @Column(name = "group_name", nullable = false)
@@ -33,7 +44,7 @@ public class AnimalGroup {
     @Column(name = "measure", length = 50)
     private String measure;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = ProductionTypeEnumConverter.class)
     @Column(name = "production_type")
     private ProductionTypeEnum productionType;
 
@@ -45,6 +56,10 @@ public class AnimalGroup {
 
     @Column(name = "isActive", columnDefinition = "TINYINT(1) DEFAULT 1")
     private boolean isActive;
+
+    @OneToMany(mappedBy = "animalGroup", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Animal> animals = new ArrayList<>();
 
     // Getters and Setters
     public Long getId() { return id; }
@@ -68,5 +83,11 @@ public class AnimalGroup {
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
     public boolean isActive() { return isActive; }
-    public void setActive(boolean active) { this.isActive = active; }
+    public void setActive(boolean active) { this.isActive = active; }    public List<Animal> getAnimals() {
+        return animals;
+    }
+    public void setAnimals(List<Animal> animals) {
+        this.animals = animals;
+    }
+
 }
