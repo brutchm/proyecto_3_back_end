@@ -1,6 +1,8 @@
+
 package com.project.demo.logic.entity.plot;
 
 import com.project.demo.logic.entity.farm.Farm;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -14,6 +16,7 @@ public class FarmPlot {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "farm_id", nullable = false)
+    @JsonIgnore
     private Farm farm;
 
     @Column(name = "plot_name", length = 150, nullable = false)
@@ -26,8 +29,13 @@ public class FarmPlot {
     @Column(name = "plot_type", length = 100, nullable = false)
     private String plotType;
 
+
     @Column(name = "current_usage", length = 100)
     private String currentUsage;
+
+    @Lob
+    @Column(name = "geometry_polygon", columnDefinition = "LONGTEXT")
+    private String geometryPolygon; // Stores the polygon as GeoJSON string
 
     @Column(name = "created_at", updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;
@@ -57,4 +65,7 @@ public class FarmPlot {
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
     public boolean isActive() { return isActive; }
     public void setActive(boolean active) { isActive = active; }
+
+    public String getGeometryPolygon() { return geometryPolygon; }
+    public void setGeometryPolygon(String geometryPolygon) { this.geometryPolygon = geometryPolygon; }
 }
