@@ -21,7 +21,7 @@ public interface UserRepository extends JpaRepository<User, Long>  {
 
     @Query("select u from User u where u.role.id=?1 and u.isActive=true")
     List<User> findByRoleId(Long roleId);
-
+    @Query("select u from User u where u.role.id=?1 and u.isActive=true")
     Page<User> findByRoleId(Long roleId, Pageable pageable);
 
 }
