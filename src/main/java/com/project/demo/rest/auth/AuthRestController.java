@@ -76,8 +76,6 @@ public class AuthRestController {
     @PostMapping("/login")
     public ResponseEntity<?> authenticate(@RequestBody User user, HttpServletRequest request) {
         try {
-            System.out.println(user.getUserEmail());
-            System.out.println(user.getUserPassword());
             User authenticatedUser = authenticationService.authenticate(user);
 
             String jwtToken = jwtService.generateToken((UserDetails) authenticatedUser);

@@ -202,11 +202,32 @@ public class UserRestController {
 
     @PreAuthorize("hasAnyRole('USER','SUPER_ADMIN')")
     @GetMapping("/listcorporations")
-    public ResponseEntity<?> getAllCorporations(HttpServletRequest request) {
-        List<User> userCorporations= userRepository.findByRoleId(3L);//Rol Corporations
+    public ResponseEntity<?> getAllCorporations(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            HttpServletRequest request
+    ) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<User> userCorporations = userRepository.findByRoleId(3L, pageable);
+
+      //  List<User> userCorporations= userRepository.findByRoleId(3L);//Rol Corporations
         if (userCorporations.isEmpty()){
             return new GlobalResponseHandler().handleResponse("No se encontraron usuarios corporativos registrados en el sistema",null,HttpStatus.NOT_FOUND,request);
         }
-        return new GlobalResponseHandler().handleResponse("Lista con todos las usuarios corporativos registrados",userCorporations,HttpStatus.OK,request);
+
+        Meta meta = new Meta(request.getMethod(), request.getRequestURL().toString());
+        meta.setTotalPages(userCorporations.getTotalPages());
+        meta.setTotalElements(userCorporations.getTotalElements());
+        meta.setPageNumber(userCorporations.getNumber() + 1);
+        meta.setPageSize(userCorporations.getSize());
+
+       // return new GlobalResponseHandler().handleResponse("Lista con todos las usuarios corporativos registrados",userCorporations,HttpStatus.OK,request);
+        return new GlobalResponseHandler().handleResponse(
+                "Lista con todos los usuarios corporativos registrados",
+                userCorporations.getContent(),
+                HttpStatus.OK,
+                meta
+        );
+
     }
 }
