@@ -32,9 +32,38 @@ public class PlotGeometryRestController {
 
     @Autowired
     private FarmPlotRepository farmPlotRepository;
-
     @Autowired
     private UserXFarmRepository userXFarmRepository;
+
+    /**
+     * Crea la geometría de una parcela (solo si no existe).
+     * @param plotId El ID de la parcela.
+     * @param geometryPolygonJson El string GeoJSON del polígono.
+     * @return La geometría creada.
+     */
+    @PostMapping
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> createGeometry(@PathVariable Long plotId, @RequestBody String geometryPolygonJson, HttpServletRequest request) {
+        Optional<FarmPlot> optionalPlot = farmPlotRepository.findById(plotId);
+        if (optionalPlot.isEmpty()) {
+            return new GlobalResponseHandler().handleResponse("Plot with id " + plotId + " not found", HttpStatus.NOT_FOUND, request);
+        }
+
+        if (!hasAccessToFarm(optionalPlot.get().getFarm().getId())) {
+            return new GlobalResponseHandler().handleResponse("Access Denied to this plot's farm", HttpStatus.FORBIDDEN, request);
+        }
+
+        if (geometryRepository.findByFarmPlot_Id(plotId).isPresent()) {
+            return new GlobalResponseHandler().handleResponse("Geometry already exists for plot " + plotId, HttpStatus.CONFLICT, request);
+        }
+
+        PlotGeometry geometry = new PlotGeometry();
+        geometry.setFarmPlot(optionalPlot.get());
+        geometry.setGeometryPolygon(geometryPolygonJson);
+
+        PlotGeometry savedGeometry = geometryRepository.save(geometry);
+        return new GlobalResponseHandler().handleResponse("Geometry created successfully", savedGeometry, HttpStatus.CREATED, request);
+    }
 
     /**
      * Obtiene la geometría de una parcela específica, validando el acceso.
