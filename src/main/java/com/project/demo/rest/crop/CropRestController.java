@@ -168,4 +168,27 @@ public class CropRestController {
             return new GlobalResponseHandler().handleResponse("Cultivo con id " + id + " no encontrado o acceso denegado", HttpStatus.NOT_FOUND, request);
         }
     }
+
+
+    @GetMapping("/list-price-crops")
+    @PreAuthorize("hasRole('CORPORATION')")
+    public ResponseEntity<?> getAllCropsMarket(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @AuthenticationPrincipal User currentUser,
+            HttpServletRequest request) {
+
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Long userId = currentUser.getId();
+        Page<Crop> cropPage = cropRepository.findAllCrops(userId,pageable);
+
+        Meta meta = new Meta(request.getMethod(), request.getRequestURL().toString());
+        meta.setTotalPages(cropPage.getTotalPages());
+        meta.setTotalElements(cropPage.getTotalElements());
+        meta.setPageNumber(cropPage.getNumber() + 1);
+        meta.setPageSize(cropPage.getSize());
+
+        return new GlobalResponseHandler().handleResponse("Cultivos obtenidos exitosamente",
+                cropPage.getContent(), HttpStatus.OK, meta);
+    }
 }
