@@ -118,6 +118,7 @@ public class FarmPlotRestController {
             existingPlot.setPlotType(plotDetails.getPlotType());
             existingPlot.setCurrentUsage(plotDetails.getCurrentUsage());
             existingPlot.setActive(plotDetails.isActive());
+            existingPlot.setGeometryPolygon(plotDetails.getGeometryPolygon());
             FarmPlot updatedPlot = farmPlotRepository.save(existingPlot);
             return new GlobalResponseHandler().handleResponse("Plot updated successfully", updatedPlot, HttpStatus.OK, request);
         } else {
