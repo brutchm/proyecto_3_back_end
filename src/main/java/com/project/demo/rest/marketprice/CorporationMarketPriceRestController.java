@@ -1,11 +1,15 @@
 package com.project.demo.rest.marketprice;
 
+import com.project.demo.logic.entity.http.Meta;
 import com.project.demo.logic.entity.marketprice.CorporationMarketPrice;
 import com.project.demo.logic.entity.marketprice.CorporationMarketPriceRepository;
 import com.project.demo.logic.entity.user.User;
 import com.project.demo.logic.entity.http.GlobalResponseHandler;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -56,7 +60,7 @@ public class CorporationMarketPriceRestController {
         }
 
         CorporationMarketPrice savedPrice = marketPriceRepository.save(priceToSave);
-        return new GlobalResponseHandler().handleResponse("Market price set successfully", savedPrice, HttpStatus.OK, request);
+        return new GlobalResponseHandler().handleResponse("Se publicó el precio correctamente", savedPrice, HttpStatus.OK, request);
     }
 
     /**
@@ -66,10 +70,23 @@ public class CorporationMarketPriceRestController {
      */
     @GetMapping("/my-prices")
     @PreAuthorize("hasRole('CORPORATION')")
-    public ResponseEntity<?> getMyMarketPrices(HttpServletRequest request) {
+    public ResponseEntity<?> getMyMarketPrices(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            HttpServletRequest request) {
         User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        List<CorporationMarketPrice> prices = marketPriceRepository.findByCorporationId(currentUser.getId());
-        return new GlobalResponseHandler().handleResponse("My market prices retrieved successfully", prices, HttpStatus.OK, request);
+        Pageable pageable = PageRequest.of(page - 1, size);
+
+        Page<CorporationMarketPrice> prices = marketPriceRepository.findByCorporationId(currentUser.getId(),pageable);
+
+        Meta meta = new Meta(request.getMethod(), request.getRequestURL().toString());
+        meta.setTotalPages(prices.getTotalPages());
+        meta.setTotalElements(prices.getTotalElements());
+        meta.setPageNumber(prices.getNumber() + 1);
+        meta.setPageSize(prices.getSize());
+
+        return new GlobalResponseHandler().handleResponse("My market prices retrieved successfully",
+                prices.getContent(), HttpStatus.OK, meta);
     }
 
     /**
@@ -83,4 +100,33 @@ public class CorporationMarketPriceRestController {
         List<CorporationMarketPrice> allPrices = marketPriceRepository.findAll();
         return new GlobalResponseHandler().handleResponse("All market prices retrieved successfully", allPrices, HttpStatus.OK, request);
     }
+
+    /**
+     * Elimina un precio de mercado publicado por la corporación autenticada.
+     * @param id El ID del precio a eliminar.
+     * @param request La solicitud HTTP.
+     * @return ResponseEntity indicando el resultado de la operación.
+     */
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('CORPORATION')")
+    public ResponseEntity<?> deleteMarketPrice(@PathVariable Long id, HttpServletRequest request) {
+        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        Optional<CorporationMarketPrice> priceOpt = marketPriceRepository.findById(id);
+
+        if (priceOpt.isEmpty()) {
+            return new GlobalResponseHandler().handleResponse("El precio no fue encontrado", HttpStatus.NOT_FOUND, request);
+        }
+
+        CorporationMarketPrice price = priceOpt.get();
+
+        if (!price.getCorporation().getId().equals(currentUser.getId())) {
+            return new GlobalResponseHandler().handleResponse("No tienes permiso para eliminar este precio", HttpStatus.FORBIDDEN, request);
+        }
+
+        marketPriceRepository.deleteById(id);
+
+        return new GlobalResponseHandler().handleResponse("El precio fue eliminado correctamente", HttpStatus.NO_CONTENT, request);
+    }
+
 }
