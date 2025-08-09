@@ -3,6 +3,8 @@ package com.project.demo.logic.entity.marketprice;
 import com.project.demo.logic.entity.crop.Crop;
 import com.project.demo.logic.entity.user.User;
 import jakarta.persistence.*;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -13,11 +15,11 @@ public class CorporationMarketPrice {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "crop_id", nullable = false)
     private Crop crop;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false) // Representa al usuario corporativo
     private User corporation;
 
@@ -27,7 +29,8 @@ public class CorporationMarketPrice {
     @Column(name = "measure_unit", length = 50)
     private String measureUnit;
 
-    @Column(name = "updated_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
+    @UpdateTimestamp
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     // Getters y Setters
