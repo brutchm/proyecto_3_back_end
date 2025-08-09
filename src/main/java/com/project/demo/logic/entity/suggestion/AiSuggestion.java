@@ -3,6 +3,9 @@ package com.project.demo.logic.entity.suggestion;
 import com.project.demo.logic.entity.farm.Farm;
 import com.project.demo.logic.entity.user.User;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -13,11 +16,11 @@ public class AiSuggestion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "related_farm_id")
     private Farm relatedFarm;
 
@@ -25,10 +28,12 @@ public class AiSuggestion {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String suggestion;
 
-    @Column(name = "created_at", updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @CreationTimestamp
+    @Column(updatable = false, name = "created_at")
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
+    @UpdateTimestamp
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     @Column(name = "isActive", columnDefinition = "TINYINT(1) DEFAULT 1")

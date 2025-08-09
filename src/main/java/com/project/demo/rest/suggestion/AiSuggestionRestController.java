@@ -13,9 +13,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -74,4 +76,61 @@ public class AiSuggestionRestController {
             return new GlobalResponseHandler().handleResponse("Suggestion not found or access denied", HttpStatus.NOT_FOUND, request);
         }
     }
+
+
+
+    @PostMapping
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> addUserSuggestions(
+            @RequestBody AiSuggestion ai,
+            @AuthenticationPrincipal User currentUser,
+            HttpServletRequest request) {
+
+        ai.setUser(currentUser);
+        AiSuggestion aiSaved= aiSuggestionRepository.save(ai);
+
+        return new GlobalResponseHandler().handleResponse("Sugerencia creada correctamente", aiSaved, HttpStatus.CREATED,request);
+    }
+
+
+    @Autowired
+    private AiSuggestionService aiSuggestionService;
+
+    @PostMapping("/generate")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> generateTemporarySuggestion(
+            @RequestBody Map<String, Object> payload,
+            @AuthenticationPrincipal User currentUser,
+            HttpServletRequest request) {
+
+        String prompt = (String) payload.get("prompt");
+        Long farmId = payload.get("farmId") != null ? Long.parseLong(payload.get("farmId").toString()) : null;
+
+        if (prompt == null || prompt.isEmpty() || farmId == null) {
+            return new GlobalResponseHandler().handleResponse("El mensaje y el ID de la finca son requeridos", HttpStatus.BAD_REQUEST, request);
+        }
+
+        String suggestion = aiSuggestionService.generateSuggestion(prompt);
+
+        return new GlobalResponseHandler().handleResponse("Sugerencia generada exitosamente", suggestion, HttpStatus.OK, request);
+    }
+
+
+/*
+    @PostMapping("/generate")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> generateTemporarySuggestion(
+            @RequestBody Map<String, String> payload,
+            @AuthenticationPrincipal User currentUser,
+            HttpServletRequest request) {
+
+        String prompt = payload.get("prompt");
+        if (prompt == null || prompt.isEmpty()) {
+            return new GlobalResponseHandler().handleResponse("El mensaje es requerido", HttpStatus.BAD_REQUEST, request);
+        }
+
+        String suggestion = aiSuggestionService.generateSuggestion(prompt);
+
+        return new GlobalResponseHandler().handleResponse("Sugerencia generada exitosamente", suggestion, HttpStatus.OK, request);
+    }*/
 }
