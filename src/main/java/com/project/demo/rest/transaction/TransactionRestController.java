@@ -30,92 +30,107 @@ public class TransactionRestController {
     private TransactionRepository transactionRepository;
 
     /**
-     * Crea una nueva transacción para el usuario autenticado. El usuario de la transacción
+     * Crea una nueva transacción para el usuario USER (Farm-Admin). El usuario de la transacción
      * se asigna automáticamente basado en la sesión actual.
      * @param transaction La transacción a crear, enviada en el cuerpo de la solicitud.
      * @param request La solicitud HTTP.
      * @return ResponseEntity con la transacción guardada.
      */
     @PostMapping
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> createTransaction(@RequestBody Transaction transaction, HttpServletRequest request) {
         User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        transaction.setUser(currentUser); // Asegura que la transacción pertenece al usuario actual.
+        transaction.setUser(currentUser);
         Transaction savedTransaction = transactionRepository.save(transaction);
-        return new GlobalResponseHandler().handleResponse("Transaction created successfully", savedTransaction, HttpStatus.CREATED, request);
+
+        Transaction fullTransaction = transactionRepository.findById(savedTransaction.getId()).orElse(savedTransaction);
+        return new GlobalResponseHandler().handleResponse("Transacción realizada exitosamente!", new TransactionDTO(fullTransaction), HttpStatus.CREATED, request);
     }
 
     /**
-     * Obtiene una lista paginada de las transacciones del usuario autenticado.
+     * Obtiene una lista paginada de las transacciones del usuario USER (Farm-Admin).
      * @param page El número de página a solicitar.
      * @param size El número de elementos por página.
      * @param request La solicitud HTTP.
      * @return ResponseEntity con una lista de transacciones y metadatos de paginación.
      */
     @GetMapping
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> getUserTransactions(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
             HttpServletRequest request) {
         User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Pageable pageable = PageRequest.of(page - 1, size);
-        Page<Transaction> transactionPage = transactionRepository.findByUserId(currentUser.getId(), pageable);
+
+        Page<Transaction> transactionPage = transactionRepository.findByUserIdWithDetails(currentUser.getId(), pageable);
+
+        Page<TransactionDTO> dtoPage = transactionPage.map(TransactionDTO::new);
 
         Meta meta = new Meta(request.getMethod(), request.getRequestURL().toString());
-        meta.setTotalPages(transactionPage.getTotalPages());
-        meta.setTotalElements(transactionPage.getTotalElements());
-        meta.setPageNumber(transactionPage.getNumber() + 1);
-        meta.setPageSize(transactionPage.getSize());
+        meta.setTotalPages(dtoPage.getTotalPages());
+        meta.setTotalElements(dtoPage.getTotalElements());
+        meta.setPageNumber(dtoPage.getNumber() + 1);
+        meta.setPageSize(dtoPage.getSize());
 
-        return new GlobalResponseHandler().handleResponse("Transactions retrieved successfully", transactionPage.getContent(), HttpStatus.OK, meta);
+        return new GlobalResponseHandler().handleResponse("Transacción obtenida exitosamente!", dtoPage.getContent(), HttpStatus.OK, meta);
     }
 
     /**
-     * Actualiza una transacción específica del usuario autenticado.
+     * Actualiza una transacción específica del usuario USER (Farm-Admin).
      * @param id El ID de la transacción a actualizar.
      * @param transactionDetails Los nuevos datos para la transacción.
      * @param request La solicitud HTTP.
      * @return ResponseEntity con la transacción actualizada o un error si no se encuentra.
      */
     @PutMapping("/{id}")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> updateUserTransaction(@PathVariable Long id, @RequestBody Transaction transactionDetails, HttpServletRequest request) {
         User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Optional<Transaction> optionalTransaction = transactionRepository.findByIdAndUserId(id, currentUser.getId());
 
         if (optionalTransaction.isPresent()) {
             Transaction existingTransaction = optionalTransaction.get();
+
             existingTransaction.setTransactionType(transactionDetails.getTransactionType());
             existingTransaction.setQuantity(transactionDetails.getQuantity());
             existingTransaction.setMeasureUnit(transactionDetails.getMeasureUnit());
             existingTransaction.setPricePerUnit(transactionDetails.getPricePerUnit());
             existingTransaction.setTotalValue(transactionDetails.getTotalValue());
             existingTransaction.setTransactionDate(transactionDetails.getTransactionDate());
+
+            existingTransaction.setFarm(transactionDetails.getFarm());
+            existingTransaction.setCrop(transactionDetails.getCrop());
+
             Transaction updatedTransaction = transactionRepository.save(existingTransaction);
-            return new GlobalResponseHandler().handleResponse("Transaction updated successfully", updatedTransaction, HttpStatus.OK, request);
+            Transaction fullTransaction = transactionRepository.findById(updatedTransaction.getId()).orElse(updatedTransaction);
+
+            return new GlobalResponseHandler().handleResponse("Transacción actualizada exitosamente!", new TransactionDTO(fullTransaction), HttpStatus.OK, request);
         } else {
-            return new GlobalResponseHandler().handleResponse("Transaction not found or access denied", HttpStatus.NOT_FOUND, request);
+            return new GlobalResponseHandler().handleResponse("Transacción no encontrada o acceso denegado", HttpStatus.NOT_FOUND, request);
         }
     }
 
     /**
-     * Elimina una transacción específica del usuario autenticado.
+     * Elimina una transacción específica del usuario USER (Farm-Admin).
      * @param id El ID de la transacción a eliminar.
      * @param request La solicitud HTTP.
      * @return ResponseEntity con el objeto eliminado o un error si no se encuentra.
      */
     @DeleteMapping("/{id}")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> deleteUserTransaction(@PathVariable Long id, HttpServletRequest request) {
         User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Optional<Transaction> optionalTransaction = transactionRepository.findByIdAndUserId(id, currentUser.getId());
 
         if (optionalTransaction.isPresent()) {
-            transactionRepository.delete(optionalTransaction.get());
-            return new GlobalResponseHandler().handleResponse("Transaction deleted successfully", optionalTransaction.get(), HttpStatus.OK, request);
+            Transaction transactionToDeactivate = optionalTransaction.get();
+            transactionToDeactivate.setIsActive(false);
+            transactionRepository.save(transactionToDeactivate);
+
+            return new GlobalResponseHandler().handleResponse("Transacción eliminada exitosamente!", new TransactionDTO(transactionToDeactivate), HttpStatus.OK, request);
         } else {
-            return new GlobalResponseHandler().handleResponse("Transaction not found or access denied", HttpStatus.NOT_FOUND, request);
+            return new GlobalResponseHandler().handleResponse("Transacción no encontrada o acceso denegado.", HttpStatus.NOT_FOUND, request);
         }
     }
 }
