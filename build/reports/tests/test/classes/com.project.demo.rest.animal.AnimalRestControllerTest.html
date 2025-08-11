@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - AnimalRestControllerTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<h1>AnimalRestControllerTest</h1>
+<div class="breadcrumbs">
+<a href="../index.html">all</a> &gt; 
+<a href="../packages/com.project.demo.rest.animal.html">com.project.demo.rest.animal</a> &gt; AnimalRestControllerTest</div>
+<div id="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox" id="tests">
+<div class="counter">4</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="failures">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="ignored">
+<div class="counter">0</div>
+<p>ignored</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="duration">
+<div class="counter">0.273s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success" id="successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="tabs">
+<ul class="tabLinks">
+<li>
+<a href="#tab0">Tests</a>
+</li>
+<li>
+<a href="#tab1">Standard output</a>
+</li>
+<li>
+<a href="#tab2">Standard error</a>
+</li>
+</ul>
+<div id="tab0" class="tab">
+<h2>Tests</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Duration</th>
+<th>Result</th>
+</tr>
+</thead>
+<tr>
+<td class="success">testCreateAnimalAccessDenied()</td>
+<td class="success">0.006s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testCreateAnimalFarmNotFound()</td>
+<td class="success">0.006s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testCreateAnimalSuccess()</td>
+<td class="success">0.253s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testGetAnimalsByFarmSuccess()</td>
+<td class="success">0.008s</td>
+<td class="success">passed</td>
+</tr>
+</table>
+</div>
+<div id="tab1" class="tab">
+<h2>Standard output</h2>
+<span class="code">
+<pre>22:18:55.767 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.project.demo.rest.animal.AnimalRestControllerTest]: AnimalRestControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+22:18:55.910 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.project.demo.DemoApplication for test class com.project.demo.rest.animal.AnimalRestControllerTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v3.2.5)
+
+2025-08-10T22:18:56.281-06:00  INFO 11936 --- [demo] [    Test worker] c.p.d.r.animal.AnimalRestControllerTest  : Starting AnimalRestControllerTest using Java 21.0.7 with PID 11936 (started by geovanni in C:\Users\geovanni\Desktop\cenfotec\proyecto_3\proyecto_3_back_end)
+2025-08-10T22:18:56.284-06:00  INFO 11936 --- [demo] [    Test worker] c.p.d.r.animal.AnimalRestControllerTest  : No active profile set, falling back to 1 default profile: &quot;default&quot;
+2025-08-10T22:18:58.810-06:00  INFO 11936 --- [demo] [    Test worker] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@3f3a6091, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@5b4d9bda, org.springframework.security.web.context.SecurityContextHolderFilter@98712fa, org.springframework.security.web.header.HeaderWriterFilter@52a75c12, org.springframework.web.filter.CorsFilter@467a2584, org.springframework.security.web.csrf.CsrfFilter@29ccab93, org.springframework.security.web.authentication.logout.LogoutFilter@d08f85a, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@3eadad14, org.springframework.security.web.authentication.ui.DefaultLoginPageGeneratingFilter@7f894a6f, org.springframework.security.web.authentication.ui.DefaultLogoutPageGeneratingFilter@121dce2, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@2ba9f743, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@3b8d2abe, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@6669cba, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@6df31abf, org.springframework.security.web.access.ExceptionTranslationFilter@1071ae7c, org.springframework.security.web.access.intercept.AuthorizationFilter@4f563f96]
+2025-08-10T22:18:58.875-06:00  INFO 11936 --- [demo] [    Test worker] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2025-08-10T22:18:58.875-06:00  INFO 11936 --- [demo] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2025-08-10T22:18:58.875-06:00  INFO 11936 --- [demo] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
+2025-08-10T22:18:59.009-06:00  INFO 11936 --- [demo] [    Test worker] c.p.d.r.animal.AnimalRestControllerTest  : Started AnimalRestControllerTest in 3.006 seconds (process running for 4.006)
+</pre>
+</span>
+</div>
+<div id="tab2" class="tab">
+<h2>Standard error</h2>
+<span class="code">
+<pre>WARNING: A Java agent has been loaded dynamically (C:\Users\geovanni\.gradle\caches\modules-2\files-2.1\net.bytebuddy\byte-buddy-agent\1.14.13\979ce25f7d3096a2e82214ba7dc972a05ce7a171\byte-buddy-agent-1.14.13.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+</pre>
+</span>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="http://www.gradle.org">Gradle 8.7</a> at Aug 10, 2025, 10:18:59 PM</p>
+</div>
+</div>
+</body>
+</html>

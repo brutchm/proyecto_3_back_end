@@ -63,7 +63,11 @@ public class AnimalRestController {
 
         animal.setFarm(farm.get());
         // Asignar el usuario actual que está registrando el animal
-        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getPrincipal() == null) {
+            return new GlobalResponseHandler().handleResponse("No hay usuario autenticado", HttpStatus.UNAUTHORIZED, request);
+        }
+        User currentUser = (User) authentication.getPrincipal();
         animal.setUser(currentUser);
 
         Animal savedAnimal = animalRepository.save(animal);
@@ -162,6 +166,9 @@ public class AnimalRestController {
      */
     private boolean hasAccessToFarm(Long farmId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getPrincipal() == null) {
+            return false;
+        }
         User currentUser = (User) authentication.getPrincipal();
         if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_SUPER_ADMIN"))) {
             return true;
