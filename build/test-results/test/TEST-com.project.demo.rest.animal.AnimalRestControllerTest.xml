@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.project.demo.rest.animal.AnimalRestControllerTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2025-08-11T05:12:43" hostname="JIMMY" time="0.293">
+<testsuite name="com.project.demo.rest.animal.AnimalRestControllerTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2025-08-11T06:40:48" hostname="JIMMY" time="0.314">
   <properties/>
-  <testcase name="testCreateAnimalSuccess()" classname="com.project.demo.rest.animal.AnimalRestControllerTest" time="0.266"/>
-  <testcase name="testCreateAnimalFarmNotFound()" classname="com.project.demo.rest.animal.AnimalRestControllerTest" time="0.007"/>
-  <testcase name="testGetAnimalsByFarmSuccess()" classname="com.project.demo.rest.animal.AnimalRestControllerTest" time="0.008"/>
-  <testcase name="testCreateAnimalAccessDenied()" classname="com.project.demo.rest.animal.AnimalRestControllerTest" time="0.006"/>
-  <system-out><![CDATA[2025-08-10T23:12:42.488-06:00  INFO 304 --- [demo] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.project.demo.rest.animal.AnimalRestControllerTest]: AnimalRestControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-2025-08-10T23:12:42.500-06:00  INFO 304 --- [demo] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.project.demo.DemoApplication for test class com.project.demo.rest.animal.AnimalRestControllerTest
+  <testcase name="testCreateAnimalSuccess()" classname="com.project.demo.rest.animal.AnimalRestControllerTest" time="0.285"/>
+  <testcase name="testCreateAnimalFarmNotFound()" classname="com.project.demo.rest.animal.AnimalRestControllerTest" time="0.008"/>
+  <testcase name="testGetAnimalsByFarmSuccess()" classname="com.project.demo.rest.animal.AnimalRestControllerTest" time="0.009"/>
+  <testcase name="testCreateAnimalAccessDenied()" classname="com.project.demo.rest.animal.AnimalRestControllerTest" time="0.007"/>
+  <system-out><![CDATA[2025-08-11T00:40:46.338-06:00  INFO 15144 --- [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.project.demo.rest.animal.AnimalRestControllerTest]: AnimalRestControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-08-11T00:40:46.374-06:00  INFO 15144 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.project.demo.DemoApplication for test class com.project.demo.rest.animal.AnimalRestControllerTest
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -16,13 +16,17 @@
  =========|_|==============|___/=/_/_/_/
  :: Spring Boot ::                (v3.2.5)
 
-2025-08-10T23:12:42.530-06:00  INFO 304 --- [demo] [    Test worker] c.p.d.r.animal.AnimalRestControllerTest  : Starting AnimalRestControllerTest using Java 21.0.7 with PID 304 (started by geovanni in C:\Users\geovanni\Desktop\cenfotec\proyecto_3\proyecto_3_back_end)
-2025-08-10T23:12:42.530-06:00  INFO 304 --- [demo] [    Test worker] c.p.d.r.animal.AnimalRestControllerTest  : No active profile set, falling back to 1 default profile: "default"
-2025-08-10T23:12:43.271-06:00  INFO 304 --- [demo] [    Test worker] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@63f562b8, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@4714ae0d, org.springframework.security.web.context.SecurityContextHolderFilter@6c946b14, org.springframework.security.web.header.HeaderWriterFilter@5f4f8d38, org.springframework.web.filter.CorsFilter@2111c3cc, org.springframework.security.web.csrf.CsrfFilter@4033d25d, org.springframework.security.web.authentication.logout.LogoutFilter@451a5843, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@2db12c5b, org.springframework.security.web.authentication.ui.DefaultLoginPageGeneratingFilter@44971269, org.springframework.security.web.authentication.ui.DefaultLogoutPageGeneratingFilter@22c2365d, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@665cb192, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@32ebfde1, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@671275fe, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@6a6a701f, org.springframework.security.web.access.ExceptionTranslationFilter@cbb32f0, org.springframework.security.web.access.intercept.AuthorizationFilter@8d5cdb0]
-2025-08-10T23:12:43.324-06:00  INFO 304 --- [demo] [    Test worker] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
-2025-08-10T23:12:43.326-06:00  INFO 304 --- [demo] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
-2025-08-10T23:12:43.327-06:00  INFO 304 --- [demo] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
-2025-08-10T23:12:43.440-06:00  INFO 304 --- [demo] [    Test worker] c.p.d.r.animal.AnimalRestControllerTest  : Started AnimalRestControllerTest in 0.928 seconds (process running for 7.191)
+2025-08-11T00:40:46.398-06:00  INFO 15144 --- [    Test worker] c.p.d.r.animal.AnimalRestControllerTest  : Starting AnimalRestControllerTest using Java 21.0.7 with PID 15144 (started by geovanni in C:\Users\geovanni\Desktop\cenfotec\proyecto_3\proyecto_3_back_end)
+2025-08-11T00:40:46.399-06:00  INFO 15144 --- [    Test worker] c.p.d.r.animal.AnimalRestControllerTest  : No active profile set, falling back to 1 default profile: "default"
+2025-08-11T00:40:48.367-06:00  INFO 15144 --- [    Test worker] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@53b7f08, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@24536f07, org.springframework.security.web.context.SecurityContextHolderFilter@684430c1, org.springframework.security.web.header.HeaderWriterFilter@2b30b627, org.springframework.web.filter.CorsFilter@32430075, org.springframework.security.web.csrf.CsrfFilter@6a7ab205, org.springframework.security.web.authentication.logout.LogoutFilter@4f1f2f84, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@37a939bc, org.springframework.security.web.authentication.ui.DefaultLoginPageGeneratingFilter@68cb8e52, org.springframework.security.web.authentication.ui.DefaultLogoutPageGeneratingFilter@1a45e29f, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@33425171, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@556944cd, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@370a935f, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@44580de0, org.springframework.security.web.access.ExceptionTranslationFilter@1107c465, org.springframework.security.web.access.intercept.AuthorizationFilter@377cbdae]
+2025-08-11T00:40:48.424-06:00  INFO 15144 --- [    Test worker] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2025-08-11T00:40:48.425-06:00  INFO 15144 --- [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2025-08-11T00:40:48.426-06:00  INFO 15144 --- [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2025-08-11T00:40:48.534-06:00  INFO 15144 --- [    Test worker] c.p.d.r.animal.AnimalRestControllerTest  : Started AnimalRestControllerTest in 2.146 seconds (process running for 4.907)
 ]]></system-out>
-  <system-err><![CDATA[]]></system-err>
+  <system-err><![CDATA[WARNING: A Java agent has been loaded dynamically (C:\Users\geovanni\.gradle\caches\modules-2\files-2.1\net.bytebuddy\byte-buddy-agent\1.14.13\979ce25f7d3096a2e82214ba7dc972a05ce7a171\byte-buddy-agent-1.14.13.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+]]></system-err>
 </testsuite>
