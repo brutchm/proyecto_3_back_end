@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">0.273s</div>
+<div class="counter">0.287s</div>
 <p>duration</p>
 </div>
 </td>
@@ -66,9 +66,6 @@
 <li>
 <a href="#tab1">Standard output</a>
 </li>
-<li>
-<a href="#tab2">Standard error</a>
-</li>
 </ul>
 <div id="tab0" class="tab">
 <h2>Tests</h2>
@@ -87,12 +84,12 @@
 </tr>
 <tr>
 <td class="success">testCreateAnimalFarmNotFound()</td>
-<td class="success">0.006s</td>
+<td class="success">0.007s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testCreateAnimalSuccess()</td>
-<td class="success">0.253s</td>
+<td class="success">0.266s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -105,8 +102,8 @@
 <div id="tab1" class="tab">
 <h2>Standard output</h2>
 <span class="code">
-<pre>22:18:55.767 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.project.demo.rest.animal.AnimalRestControllerTest]: AnimalRestControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-22:18:55.910 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.project.demo.DemoApplication for test class com.project.demo.rest.animal.AnimalRestControllerTest
+<pre>2025-08-10T23:12:42.488-06:00  INFO 304 --- [demo] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.project.demo.rest.animal.AnimalRestControllerTest]: AnimalRestControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-08-10T23:12:42.500-06:00  INFO 304 --- [demo] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.project.demo.DemoApplication for test class com.project.demo.rest.animal.AnimalRestControllerTest
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -116,23 +113,13 @@
  =========|_|==============|___/=/_/_/_/
  :: Spring Boot ::                (v3.2.5)
 
-2025-08-10T22:18:56.281-06:00  INFO 11936 --- [demo] [    Test worker] c.p.d.r.animal.AnimalRestControllerTest  : Starting AnimalRestControllerTest using Java 21.0.7 with PID 11936 (started by geovanni in C:\Users\geovanni\Desktop\cenfotec\proyecto_3\proyecto_3_back_end)
-2025-08-10T22:18:56.284-06:00  INFO 11936 --- [demo] [    Test worker] c.p.d.r.animal.AnimalRestControllerTest  : No active profile set, falling back to 1 default profile: &quot;default&quot;
-2025-08-10T22:18:58.810-06:00  INFO 11936 --- [demo] [    Test worker] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@3f3a6091, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@5b4d9bda, org.springframework.security.web.context.SecurityContextHolderFilter@98712fa, org.springframework.security.web.header.HeaderWriterFilter@52a75c12, org.springframework.web.filter.CorsFilter@467a2584, org.springframework.security.web.csrf.CsrfFilter@29ccab93, org.springframework.security.web.authentication.logout.LogoutFilter@d08f85a, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@3eadad14, org.springframework.security.web.authentication.ui.DefaultLoginPageGeneratingFilter@7f894a6f, org.springframework.security.web.authentication.ui.DefaultLogoutPageGeneratingFilter@121dce2, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@2ba9f743, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@3b8d2abe, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@6669cba, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@6df31abf, org.springframework.security.web.access.ExceptionTranslationFilter@1071ae7c, org.springframework.security.web.access.intercept.AuthorizationFilter@4f563f96]
-2025-08-10T22:18:58.875-06:00  INFO 11936 --- [demo] [    Test worker] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
-2025-08-10T22:18:58.875-06:00  INFO 11936 --- [demo] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
-2025-08-10T22:18:58.875-06:00  INFO 11936 --- [demo] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
-2025-08-10T22:18:59.009-06:00  INFO 11936 --- [demo] [    Test worker] c.p.d.r.animal.AnimalRestControllerTest  : Started AnimalRestControllerTest in 3.006 seconds (process running for 4.006)
-</pre>
-</span>
-</div>
-<div id="tab2" class="tab">
-<h2>Standard error</h2>
-<span class="code">
-<pre>WARNING: A Java agent has been loaded dynamically (C:\Users\geovanni\.gradle\caches\modules-2\files-2.1\net.bytebuddy\byte-buddy-agent\1.14.13\979ce25f7d3096a2e82214ba7dc972a05ce7a171\byte-buddy-agent-1.14.13.jar)
-WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
-WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
-WARNING: Dynamic loading of agents will be disallowed by default in a future release
+2025-08-10T23:12:42.530-06:00  INFO 304 --- [demo] [    Test worker] c.p.d.r.animal.AnimalRestControllerTest  : Starting AnimalRestControllerTest using Java 21.0.7 with PID 304 (started by geovanni in C:\Users\geovanni\Desktop\cenfotec\proyecto_3\proyecto_3_back_end)
+2025-08-10T23:12:42.530-06:00  INFO 304 --- [demo] [    Test worker] c.p.d.r.animal.AnimalRestControllerTest  : No active profile set, falling back to 1 default profile: &quot;default&quot;
+2025-08-10T23:12:43.271-06:00  INFO 304 --- [demo] [    Test worker] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@63f562b8, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@4714ae0d, org.springframework.security.web.context.SecurityContextHolderFilter@6c946b14, org.springframework.security.web.header.HeaderWriterFilter@5f4f8d38, org.springframework.web.filter.CorsFilter@2111c3cc, org.springframework.security.web.csrf.CsrfFilter@4033d25d, org.springframework.security.web.authentication.logout.LogoutFilter@451a5843, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@2db12c5b, org.springframework.security.web.authentication.ui.DefaultLoginPageGeneratingFilter@44971269, org.springframework.security.web.authentication.ui.DefaultLogoutPageGeneratingFilter@22c2365d, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@665cb192, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@32ebfde1, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@671275fe, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@6a6a701f, org.springframework.security.web.access.ExceptionTranslationFilter@cbb32f0, org.springframework.security.web.access.intercept.AuthorizationFilter@8d5cdb0]
+2025-08-10T23:12:43.324-06:00  INFO 304 --- [demo] [    Test worker] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2025-08-10T23:12:43.326-06:00  INFO 304 --- [demo] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2025-08-10T23:12:43.327-06:00  INFO 304 --- [demo] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2025-08-10T23:12:43.440-06:00  INFO 304 --- [demo] [    Test worker] c.p.d.r.animal.AnimalRestControllerTest  : Started AnimalRestControllerTest in 0.928 seconds (process running for 7.191)
 </pre>
 </span>
 </div>
@@ -144,7 +131,7 @@ WARNING: Dynamic loading of agents will be disallowed by default in a future rel
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 8.7</a> at Aug 10, 2025, 10:18:59 PM</p>
+<a href="http://www.gradle.org">Gradle 8.7</a> at Aug 10, 2025, 11:12:44 PM</p>
 </div>
 </div>
 </body>
