@@ -1,12 +1,15 @@
 
 package com.project.demo.logic.entity.plot;
 
+import com.project.demo.logic.entity.cropsmanagement.CropsManagement;
 import com.project.demo.logic.entity.farm.Farm;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.hibernate.annotations.OnDelete;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "farm_plots")
@@ -48,6 +51,18 @@ public class FarmPlot {
 
     @Column(name = "isActive", columnDefinition = "TINYINT(1) DEFAULT 1")
     private boolean isActive;
+
+    @OneToMany(mappedBy = "farmPlot", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CropsManagement> cropsManagements = new ArrayList<>();
+
+    public List<CropsManagement> getCropsManagements() {
+        return cropsManagements;
+    }
+
+    public void setCropsManagements(List<CropsManagement> cropsManagements) {
+        this.cropsManagements = cropsManagements;
+    }
+
 
     // Getters and Setters
     public Long getId() { return id; }

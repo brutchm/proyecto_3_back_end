@@ -77,8 +77,13 @@ public class AiSuggestionRestController {
         }
     }
 
-
-
+    /**
+     * Crea y guarda una nueva sugerencia asociada al usuario autenticado.
+     * @param ai Objeto AiSuggestion recibido en el cuerpo de la solicitud.
+     * @param currentUser Usuario actualmente autenticado.
+     * @param request La solicitud HTTP.
+     * @return ResponseEntity con el objeto guardado y mensaje de éxito.
+     */
     @PostMapping
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> addUserSuggestions(
@@ -95,7 +100,13 @@ public class AiSuggestionRestController {
 
     @Autowired
     private AiSuggestionService aiSuggestionService;
-
+    /**
+     * Genera una sugerencia temporal basada en el prompt y la finca especificada para el usuario autenticado.
+     * @param payload Mapa con los parámetros 'prompt' (mensaje) y 'farmId' (ID de la finca).
+     * @param currentUser Usuario actualmente autenticado.
+     * @param request La solicitud HTTP.
+     * @return ResponseEntity con la sugerencia generada o error si faltan parámetros obligatorios.
+     */
     @PostMapping("/generate")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> generateTemporarySuggestion(
@@ -104,33 +115,18 @@ public class AiSuggestionRestController {
             HttpServletRequest request) {
 
         String prompt = (String) payload.get("prompt");
-        Long farmId = payload.get("farmId") != null ? Long.parseLong(payload.get("farmId").toString()) : null;
+        Long farmId = payload.get("farmId") != null ? Long.valueOf(payload.get("farmId").toString()) : null;
 
-        if (prompt == null || prompt.isEmpty() || farmId == null) {
-            return new GlobalResponseHandler().handleResponse("El mensaje y el ID de la finca son requeridos", HttpStatus.BAD_REQUEST, request);
+        if (prompt == null || prompt.isEmpty()) {
+            return new GlobalResponseHandler().handleResponse("El mensaje es requerido", HttpStatus.BAD_REQUEST, request);
+        }
+        if (farmId == null) {
+            return new GlobalResponseHandler().handleResponse("El farmId es requerido", HttpStatus.BAD_REQUEST, request);
         }
 
-        String suggestion = aiSuggestionService.generateSuggestion(prompt);
+        String suggestion = aiSuggestionService.generateSuggestion(prompt, farmId);
 
         return new GlobalResponseHandler().handleResponse("Sugerencia generada exitosamente", suggestion, HttpStatus.OK, request);
     }
 
-
-/*
-    @PostMapping("/generate")
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> generateTemporarySuggestion(
-            @RequestBody Map<String, String> payload,
-            @AuthenticationPrincipal User currentUser,
-            HttpServletRequest request) {
-
-        String prompt = payload.get("prompt");
-        if (prompt == null || prompt.isEmpty()) {
-            return new GlobalResponseHandler().handleResponse("El mensaje es requerido", HttpStatus.BAD_REQUEST, request);
-        }
-
-        String suggestion = aiSuggestionService.generateSuggestion(prompt);
-
-        return new GlobalResponseHandler().handleResponse("Sugerencia generada exitosamente", suggestion, HttpStatus.OK, request);
-    }*/
 }
