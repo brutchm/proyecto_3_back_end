@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.project.demo.rest.plot.PlotGeometryRestControllerTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2025-08-11T06:40:49" hostname="JIMMY" time="0.036">
+<testsuite name="com.project.demo.rest.plot.PlotGeometryRestControllerTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2025-08-11T19:34:50" hostname="JIMMY" time="0.032">
   <properties/>
-  <testcase name="testCreateGeometryAlreadyExists()" classname="com.project.demo.rest.plot.PlotGeometryRestControllerTest" time="0.011"/>
-  <testcase name="testGetGeometryByPlotSuccess()" classname="com.project.demo.rest.plot.PlotGeometryRestControllerTest" time="0.008"/>
-  <testcase name="testCreateGeometryPlotNotFound()" classname="com.project.demo.rest.plot.PlotGeometryRestControllerTest" time="0.007"/>
+  <testcase name="testCreateGeometryAlreadyExists()" classname="com.project.demo.rest.plot.PlotGeometryRestControllerTest" time="0.01"/>
+  <testcase name="testGetGeometryByPlotSuccess()" classname="com.project.demo.rest.plot.PlotGeometryRestControllerTest" time="0.007"/>
+  <testcase name="testCreateGeometryPlotNotFound()" classname="com.project.demo.rest.plot.PlotGeometryRestControllerTest" time="0.006"/>
   <testcase name="testCreateGeometrySuccess()" classname="com.project.demo.rest.plot.PlotGeometryRestControllerTest" time="0.006"/>
-  <system-out><![CDATA[2025-08-11T00:40:48.864-06:00  INFO 15144 --- [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.project.demo.rest.plot.PlotGeometryRestControllerTest]: PlotGeometryRestControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-2025-08-11T00:40:48.891-06:00  INFO 15144 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.project.demo.DemoApplication for test class com.project.demo.rest.plot.PlotGeometryRestControllerTest
+  <system-out><![CDATA[2025-08-11T13:34:50.616-06:00  INFO 16588 --- [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.project.demo.rest.plot.PlotGeometryRestControllerTest]: PlotGeometryRestControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-08-11T13:34:50.634-06:00  INFO 16588 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.project.demo.DemoApplication for test class com.project.demo.rest.plot.PlotGeometryRestControllerTest
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -16,13 +16,13 @@
  =========|_|==============|___/=/_/_/_/
  :: Spring Boot ::                (v3.2.5)
 
-2025-08-11T00:40:48.912-06:00  INFO 15144 --- [    Test worker] c.p.d.r.p.PlotGeometryRestControllerTest : Starting PlotGeometryRestControllerTest using Java 21.0.7 with PID 15144 (started by geovanni in C:\Users\geovanni\Desktop\cenfotec\proyecto_3\proyecto_3_back_end)
-2025-08-11T00:40:48.913-06:00  INFO 15144 --- [    Test worker] c.p.d.r.p.PlotGeometryRestControllerTest : No active profile set, falling back to 1 default profile: "default"
-2025-08-11T00:40:49.212-06:00  INFO 15144 --- [    Test worker] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@65384249, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@6441db2c, org.springframework.security.web.context.SecurityContextHolderFilter@19983dd1, org.springframework.security.web.header.HeaderWriterFilter@5b2c9a69, org.springframework.web.filter.CorsFilter@218c6d3e, org.springframework.security.web.csrf.CsrfFilter@64c1a76e, org.springframework.security.web.authentication.logout.LogoutFilter@37bac0f4, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@e196238, org.springframework.security.web.authentication.ui.DefaultLoginPageGeneratingFilter@472dc215, org.springframework.security.web.authentication.ui.DefaultLogoutPageGeneratingFilter@63f819a6, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@6f45be6f, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@700b035b, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@786de0a3, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@44f5259a, org.springframework.security.web.access.ExceptionTranslationFilter@2f143ea, org.springframework.security.web.access.intercept.AuthorizationFilter@951053f]
-2025-08-11T00:40:49.219-06:00  INFO 15144 --- [    Test worker] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
-2025-08-11T00:40:49.219-06:00  INFO 15144 --- [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
-2025-08-11T00:40:49.220-06:00  INFO 15144 --- [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
-2025-08-11T00:40:49.226-06:00  INFO 15144 --- [    Test worker] c.p.d.r.p.PlotGeometryRestControllerTest : Started PlotGeometryRestControllerTest in 0.333 seconds (process running for 5.599)
+2025-08-11T13:34:50.651-06:00  INFO 16588 --- [    Test worker] c.p.d.r.p.PlotGeometryRestControllerTest : Starting PlotGeometryRestControllerTest using Java 21.0.7 with PID 16588 (started by geovanni in C:\Users\geovanni\Desktop\cenfotec\proyecto_3\proyecto_3_back_end)
+2025-08-11T13:34:50.656-06:00  INFO 16588 --- [    Test worker] c.p.d.r.p.PlotGeometryRestControllerTest : No active profile set, falling back to 1 default profile: "default"
+2025-08-11T13:34:50.908-06:00  INFO 16588 --- [    Test worker] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@3d6d5694, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@40d8cb26, org.springframework.security.web.context.SecurityContextHolderFilter@6f543c90, org.springframework.security.web.header.HeaderWriterFilter@1ace122d, org.springframework.web.filter.CorsFilter@e93f8b4, org.springframework.security.web.csrf.CsrfFilter@38e8488f, org.springframework.security.web.authentication.logout.LogoutFilter@4b2dd504, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@4eb016a7, org.springframework.security.web.authentication.ui.DefaultLoginPageGeneratingFilter@5bfa9a7, org.springframework.security.web.authentication.ui.DefaultLogoutPageGeneratingFilter@6617fa99, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@6b907f80, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@1582adc5, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@6f8a8101, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@3199d939, org.springframework.security.web.access.ExceptionTranslationFilter@62931c28, org.springframework.security.web.access.intercept.AuthorizationFilter@89ebacd]
+2025-08-11T13:34:50.914-06:00  INFO 16588 --- [    Test worker] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2025-08-11T13:34:50.914-06:00  INFO 16588 --- [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2025-08-11T13:34:50.914-06:00  INFO 16588 --- [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
+2025-08-11T13:34:50.918-06:00  INFO 16588 --- [    Test worker] c.p.d.r.p.PlotGeometryRestControllerTest : Started PlotGeometryRestControllerTest in 0.282 seconds (process running for 9.755)
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
