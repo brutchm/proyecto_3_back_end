@@ -2,6 +2,7 @@ package com.project.demo.logic.entity.farm;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.project.demo.logic.entity.animal.AnimalGroup;
+import com.project.demo.logic.entity.plot.FarmPlot;
 import com.project.demo.logic.entity.userfarm.UserXFarm;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -75,6 +76,12 @@ public class Farm {
     @OneToOne(mappedBy = "farm", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference("farm-technicalInfo")
     private FarmsTechnicalInformation technicalInformation;
+
+    @OneToMany(mappedBy = "farm", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FarmPlot> plots = new ArrayList<>();
+
+    public List<FarmPlot> getPlots() { return plots; }
+    public void setPlots(List<FarmPlot> plots) { this.plots = plots; }
 
 
     // Getters and Setters

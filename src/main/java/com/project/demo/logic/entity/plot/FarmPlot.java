@@ -4,6 +4,8 @@ package com.project.demo.logic.entity.plot;
 import com.project.demo.logic.entity.farm.Farm;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -15,7 +17,8 @@ public class FarmPlot {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "farm_id", nullable = false)
+    @JoinColumn(name = "farm_id", nullable = false, foreignKey = @ForeignKey(name = "fk_farm"))
+    @OnDelete(action = org.hibernate.annotations.OnDeleteAction.CASCADE)
     @JsonIgnore
     private Farm farm;
 
