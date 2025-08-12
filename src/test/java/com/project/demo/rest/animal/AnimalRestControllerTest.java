@@ -121,7 +121,7 @@ public class AnimalRestControllerTest {
     @Test
     void testCreateAnimalAccessDenied() throws Exception {
         Mockito.when(userXFarmRepository.existsById(Mockito.any())).thenReturn(false);
-        String json = "{\"species\":\"Cow\"}";
+        String json = "";
 
         // Set up custom User principal in SecurityContext
         User mockUser = new User();
