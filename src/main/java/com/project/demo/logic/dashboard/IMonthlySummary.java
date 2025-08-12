@@ -1,13 +1,11 @@
 package com.project.demo.logic.dashboard;
 
-import java.time.LocalDate;
-
 /**
- * Proyección de interfaz para los resultados de la consulta de resumen diario.
+ * Proyección de interfaz para los resultados de la consulta de resumen mensual.
  * Spring Data JPA implementará automáticamente esta interfaz.
  */
-public interface DailySummaryProjection {
-    LocalDate getDate();
+public interface IMonthlySummary {
+    String getMonth();
     Double getTotalIncome();
     Double getTotalExpenses();
 }

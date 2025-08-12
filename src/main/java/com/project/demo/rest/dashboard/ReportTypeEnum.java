@@ -8,5 +8,7 @@ public enum ReportTypeEnum {
     INCOME_VS_EXPENSES,
     CROP_YIELD,
     OPERATIONAL_COSTS,
-    PLOT_YIELD
+    PLOT_YIELD,
+    CROP_COSTS,
+    FARM_COSTS,
 }

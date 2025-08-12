@@ -1,4 +1,4 @@
-package com.project.demo.rest.dashboard;
+package com.project.demo.rest.dashboard.DTO;
 
 public class DashboardSummaryDTO {
     private double totalIncome;
@@ -13,7 +13,6 @@ public class DashboardSummaryDTO {
         this.transactionCount = transactionCount;
     }
 
-    // Getters y Setters
     public double getTotalIncome() { return totalIncome; }
     public void setTotalIncome(double totalIncome) { this.totalIncome = totalIncome; }
     public double getTotalExpenses() { return totalExpenses; }

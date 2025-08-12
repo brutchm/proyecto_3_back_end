@@ -1,4 +1,6 @@
-package com.project.demo.rest.dashboard;
+package com.project.demo.rest.dashboard.DTO;
+
+import com.project.demo.rest.dashboard.ReportTypeEnum;
 
 import java.time.LocalDate;
 
@@ -7,12 +9,12 @@ import java.time.LocalDate;
  */
 public class ReportRequestDTO {
 
-    private ReportTypeEnum reportTypeEnum; // Ej: "INCOME_VS_EXPENSES"
+    private ReportTypeEnum reportTypeEnum;
     private LocalDate startDate;
     private LocalDate endDate;
     private Long farmId; // Opcional
+    private Long cropId; // Opcional
 
-    // Getters y Setters
     public ReportTypeEnum getReportType() { return reportTypeEnum; }
     public void setReportType(ReportTypeEnum reportTypeEnum) { this.reportTypeEnum = reportTypeEnum; }
     public LocalDate getStartDate() { return startDate; }
@@ -21,4 +23,6 @@ public class ReportRequestDTO {
     public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
     public Long getFarmId() { return farmId; }
     public void setFarmId(Long farmId) { this.farmId = farmId; }
+    public Long getCropId() { return cropId; }
+    public void setCropId(Long cropId) { this.cropId = cropId; }
 }

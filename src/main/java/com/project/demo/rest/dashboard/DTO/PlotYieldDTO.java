@@ -1,4 +1,4 @@
-package com.project.demo.rest.dashboard;
+package com.project.demo.rest.dashboard.DTO;
 
 /**
  * DTO para representar una fila en el reporte de rendimiento por parcela.
@@ -16,7 +16,6 @@ public class PlotYieldDTO {
         this.measureUnit = measureUnit;
     }
 
-    // Getters y Setters
     public String getPlotName() { return plotName; }
     public void setPlotName(String plotName) { this.plotName = plotName; }
     public String getCropName() { return cropName; }

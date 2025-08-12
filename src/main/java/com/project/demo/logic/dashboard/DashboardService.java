@@ -1,7 +1,7 @@
 package com.project.demo.logic.dashboard;
 
 import com.project.demo.logic.entity.transaction.TransactionRepository;
-import com.project.demo.rest.dashboard.*;
+import com.project.demo.rest.dashboard.DTO.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,11 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,6 +18,10 @@ public class DashboardService {
     @Autowired
     private TransactionRepository transactionRepository;
 
+    /**
+     * Obtiene un resumen del dashboard para el usuario especificado.
+     * Incluye ingresos totales, gastos totales y número de transacciones.
+     */
     @Transactional(readOnly = true)
     public DashboardSummaryDTO getSummaryForUser(Long userId) {
         Double totalIncome = transactionRepository.sumTotalIncomeByUserId(userId);
@@ -31,72 +31,22 @@ public class DashboardService {
         return new DashboardSummaryDTO(totalIncome, totalExpenses, transactionCount);
     }
 
-//    @Transactional(readOnly = true)
-//    public IncomeVsExpensesDTO generateIncomeVsExpensesReport(Long userId, ReportRequestDTO request) {
-//        LocalDateTime startDateTime = request.getStartDate().atStartOfDay();
-//        LocalDateTime endDateTime = request.getEndDate().atTime(LocalTime.MAX);
-//
-//        List<MonthlySummary> summaries = transactionRepository.getIncomeVsExpensesSummary(
-//                userId, startDateTime, endDateTime, request.getFarmId());
-//
-//        List<String> labels = summaries.stream().map(MonthlySummary::getMonth).collect(Collectors.toList());
-//        List<Double> incomeData = summaries.stream().map(MonthlySummary::getTotalIncome).collect(Collectors.toList());
-//        List<Double> expensesData = summaries.stream().map(MonthlySummary::getTotalExpenses).collect(Collectors.toList());
-//
-//        return new IncomeVsExpensesDTO(labels, incomeData, expensesData);
-//    }
-
+    /**
+     * Genera los datos para el gráfico de ingresos vs. gastos basado en el rango de fechas y la finca proporcionados.
+     */
     @Transactional(readOnly = true)
     public IncomeVsExpensesDTO generateIncomeVsExpensesReport(Long userId, ReportRequestDTO request) {
         LocalDateTime startDateTime = request.getStartDate().atStartOfDay();
         LocalDateTime endDateTime = request.getEndDate().atTime(LocalTime.MAX);
 
-        // **CORRECCIÓN:** Llamamos al nuevo método del repositorio.
-        List<MonthlySummaryProjection> summaries = transactionRepository.getIncomeVsExpensesSummary(
+        List<IMonthlySummary> summaries = transactionRepository.getIncomeVsExpensesSummary(
                 userId, startDateTime, endDateTime, request.getFarmId());
 
-        // Mapeamos los resultados de la proyección al DTO de respuesta.
-        List<String> labels = summaries.stream().map(MonthlySummaryProjection::getMonth).collect(Collectors.toList());
-        List<Double> incomeData = summaries.stream().map(MonthlySummaryProjection::getTotalIncome).collect(Collectors.toList());
-        List<Double> expensesData = summaries.stream().map(MonthlySummaryProjection::getTotalExpenses).collect(Collectors.toList());
+        List<String> labels = summaries.stream().map(IMonthlySummary::getMonth).collect(Collectors.toList());
+        List<Double> incomeData = summaries.stream().map(IMonthlySummary::getTotalIncome).collect(Collectors.toList());
+        List<Double> expensesData = summaries.stream().map(IMonthlySummary::getTotalExpenses).collect(Collectors.toList());
 
         return new IncomeVsExpensesDTO(labels, incomeData, expensesData);
-    }
-
-    /**
-     * Genera los datos para el gráfico de ingresos vs. egresos de los últimos 30 días.
-     * Rellena los días sin transacciones con ceros para asegurar un eje de tiempo continuo.
-     */
-    @Transactional(readOnly = true)
-    public ChartDataDTO getDailyChartForUser(Long userId) {
-        LocalDateTime startDate = LocalDateTime.now().minusDays(29).toLocalDate().atStartOfDay();
-        List<DailySummaryProjection> summaries = transactionRepository.getDailyIncomeVsExpensesSummary(userId, startDate);
-
-        Map<LocalDate, DailySummaryProjection> summaryMap = summaries.stream()
-                .collect(Collectors.toMap(DailySummaryProjection::getDate, Function.identity()));
-
-        List<String> labels = new ArrayList<>();
-        List<Double> incomeData = new ArrayList<>();
-        List<Double> expensesData = new ArrayList<>();
-
-        LocalDate currentDate = LocalDate.now().minusDays(29);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd");
-
-        for (int i = 0; i < 30; i++) {
-            labels.add(currentDate.format(formatter));
-
-            DailySummaryProjection summary = summaryMap.get(currentDate);
-            if (summary != null) {
-                incomeData.add(summary.getTotalIncome());
-                expensesData.add(summary.getTotalExpenses());
-            } else {
-                incomeData.add(0.0);
-                expensesData.add(0.0);
-            }
-            currentDate = currentDate.plusDays(1);
-        }
-
-        return new ChartDataDTO(labels, incomeData, expensesData);
     }
 
     /**
@@ -118,7 +68,7 @@ public class DashboardService {
     }
 
     @Transactional(readOnly = true)
-    public List<CropYieldDTO> getTopCropYieldsForUser(Long userId) {
+    public List<TopCropYieldDTO> getTopCropYieldsForUser(Long userId) {
         return transactionRepository.findTop5CropYieldsByUserId(userId);
     }
 
@@ -128,18 +78,121 @@ public class DashboardService {
     @Transactional(readOnly = true)
     public List<PlotYieldDTO> generatePlotYieldReport(Long userId, ReportRequestDTO request) {
         if (request.getFarmId() == null) {
-            // Este reporte requiere una finca específica para ser significativo.
             throw new IllegalArgumentException("Farm ID is required for Plot Yield report.");
         }
 
         LocalDateTime startDateTime = request.getStartDate().atStartOfDay();
         LocalDateTime endDateTime = request.getEndDate().atTime(LocalTime.MAX);
 
-        return transactionRepository.getPlotYieldSummary(
+        List<IPlotYield> projections = transactionRepository.getPlotYieldSummary(
                 userId,
                 request.getFarmId(),
                 startDateTime,
                 endDateTime
         );
+
+        return projections.stream()
+                .map(p -> new PlotYieldDTO(
+                        p.getPlotName(),
+                        p.getCropName(),
+                        p.getTotalQuantitySold(),
+                        p.getMeasureUnit()
+                ))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Genera los datos para el reporte de rendimiento por cultivo.
+     */
+    @Transactional(readOnly = true)
+    public List<CropYieldDTO> generateCropYieldReport(Long userId, ReportRequestDTO request) {
+        LocalDateTime startDateTime = request.getStartDate().atStartOfDay();
+        LocalDateTime endDateTime = request.getEndDate().atTime(LocalTime.MAX);
+
+        List<ICropYield> projections = transactionRepository.getCropYieldSummary(
+                userId,
+                startDateTime,
+                endDateTime,
+                request.getFarmId(),
+                request.getCropId()
+        );
+
+        return projections.stream()
+                .map(p -> new CropYieldDTO(
+                        p.getCropName(),
+                        p.getTotalQuantitySold(),
+                        p.getMeasureUnit(),
+                        p.getTotalIncome(),
+                        p.getTotalExpenses()
+                ))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Genera los datos para el reporte de costos por cultivo.
+     */
+    @Transactional(readOnly = true)
+    public List<CropCostDTO> generateCropCostReport(Long userId, ReportRequestDTO request) {
+        LocalDateTime startDateTime = request.getStartDate().atStartOfDay();
+        LocalDateTime endDateTime = request.getEndDate().atTime(LocalTime.MAX);
+
+        List<ICropCost> projections = transactionRepository.getCropCostSummary(
+                userId,
+                startDateTime,
+                endDateTime,
+                request.getFarmId()
+        );
+
+        return projections.stream()
+                .map(p -> new CropCostDTO(
+                        p.getCropName(),
+                        p.getTotalCost()
+                ))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Genera los datos para el reporte de costos operativos.
+     */
+    @Transactional(readOnly = true)
+    public List<OperationalCostDTO> generateOperationalCostReport(Long userId, ReportRequestDTO request) {
+        LocalDateTime startDateTime = request.getStartDate().atStartOfDay();
+        LocalDateTime endDateTime = request.getEndDate().atTime(LocalTime.MAX);
+
+        List<IOperationalCost> projections = transactionRepository.getOperationalCostSummary(
+                userId,
+                startDateTime,
+                endDateTime,
+                request.getFarmId()
+        );
+
+        return projections.stream()
+                .map(p -> new OperationalCostDTO(
+                        p.getMonth(),
+                        p.getTotalCost()
+                ))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Genera los datos para el reporte de costos por finca.
+     */
+    @Transactional(readOnly = true)
+    public List<FarmCostDTO> generateFarmCostReport(Long userId, ReportRequestDTO request) {
+        LocalDateTime startDateTime = request.getStartDate().atStartOfDay();
+        LocalDateTime endDateTime = request.getEndDate().atTime(LocalTime.MAX);
+
+        List<IFarmCost> projections = transactionRepository.getFarmCostSummary(
+                userId,
+                startDateTime,
+                endDateTime
+        );
+
+        return projections.stream()
+                .map(p -> new FarmCostDTO(
+                        p.getFarmName(),
+                        p.getTotalCost()
+                ))
+                .collect(Collectors.toList());
     }
 }
