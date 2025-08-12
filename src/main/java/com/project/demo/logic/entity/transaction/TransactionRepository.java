@@ -113,4 +113,16 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
             @Param("farmId") Long farmId,
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate);
+
+    /**
+     * Encuentra todas las transacciones para un usuario específico con paginación.
+     * Utiliza JOIN FETCH para cargar de forma proactiva las entidades Farm y Crop relacionadas,
+     * evitando así problemas de N+1 y errores de carga perezosa (lazy loading).
+     *
+     * @param userId El ID del usuario.
+     * @param pageable La información de paginación.
+     * @return Una página de transacciones con sus fincas y cultivos asociados.
+     */
+    @Query("SELECT t FROM Transaction t LEFT JOIN FETCH t.farm LEFT JOIN FETCH t.crop WHERE t.user.id = :userId AND t.isActive = true")
+    Page<Transaction> findByUserIdWithDetails(@Param("userId") Long userId, Pageable pageable);
 }

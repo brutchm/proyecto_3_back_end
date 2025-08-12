@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.project.demo.rest.plot.PlotGeometryRestControllerTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2025-08-12T02:11:06" hostname="JIMMY" time="0.048">
+  <properties/>
+  <testcase name="testCreateGeometryAlreadyExists()" classname="com.project.demo.rest.plot.PlotGeometryRestControllerTest" time="0.014"/>
+  <testcase name="testGetGeometryByPlotSuccess()" classname="com.project.demo.rest.plot.PlotGeometryRestControllerTest" time="0.017"/>
+  <testcase name="testCreateGeometryPlotNotFound()" classname="com.project.demo.rest.plot.PlotGeometryRestControllerTest" time="0.007"/>
+  <testcase name="testCreateGeometrySuccess()" classname="com.project.demo.rest.plot.PlotGeometryRestControllerTest" time="0.006"/>
+  <system-out><![CDATA[2025-08-11T20:11:06.247-06:00  INFO 9584 --- [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.project.demo.rest.plot.PlotGeometryRestControllerTest]: PlotGeometryRestControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-08-11T20:11:06.276-06:00  INFO 9584 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.project.demo.DemoApplication for test class com.project.demo.rest.plot.PlotGeometryRestControllerTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v3.2.5)
+
+2025-08-11T20:11:06.298-06:00  INFO 9584 --- [    Test worker] c.p.d.r.p.PlotGeometryRestControllerTest : Starting PlotGeometryRestControllerTest using Java 21.0.7 with PID 9584 (started by geovanni in C:\Users\geovanni\Desktop\cenfotec\proyecto_3\proyecto_3_back_end)
+2025-08-11T20:11:06.298-06:00  INFO 9584 --- [    Test worker] c.p.d.r.p.PlotGeometryRestControllerTest : No active profile set, falling back to 1 default profile: "default"
+2025-08-11T20:11:06.699-06:00  INFO 9584 --- [    Test worker] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@6009e8ab, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@525230df, org.springframework.security.web.context.SecurityContextHolderFilter@724e9296, org.springframework.security.web.header.HeaderWriterFilter@be906aa, org.springframework.web.filter.CorsFilter@24b5863a, org.springframework.security.web.csrf.CsrfFilter@19895e73, org.springframework.security.web.authentication.logout.LogoutFilter@123b8431, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@1f7d3d82, org.springframework.security.web.authentication.ui.DefaultLoginPageGeneratingFilter@c9be844, org.springframework.security.web.authentication.ui.DefaultLogoutPageGeneratingFilter@3cc6d144, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@51293850, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@21e7206a, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@4f847b48, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@13253ac7, org.springframework.security.web.access.ExceptionTranslationFilter@131fa25c, org.springframework.security.web.access.intercept.AuthorizationFilter@2d83ed58]
+2025-08-11T20:11:06.707-06:00  INFO 9584 --- [    Test worker] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2025-08-11T20:11:06.707-06:00  INFO 9584 --- [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2025-08-11T20:11:06.709-06:00  INFO 9584 --- [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 2 ms
+2025-08-11T20:11:06.719-06:00  INFO 9584 --- [    Test worker] c.p.d.r.p.PlotGeometryRestControllerTest : Started PlotGeometryRestControllerTest in 0.44 seconds (process running for 13.865)
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
