@@ -16,9 +16,8 @@ public class CropsManagement {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_crop")
-    @JsonIgnore
     private Crop crop;
 
     @ManyToOne(fetch = FetchType.LAZY)
