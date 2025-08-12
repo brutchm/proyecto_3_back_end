@@ -18,7 +18,6 @@ public class CropsManagement {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_crop")
-    //@JsonIgnore
     private Crop crop;
 
     @ManyToOne(fetch = FetchType.LAZY)
