@@ -161,7 +161,7 @@ public class CropRestController {
         Optional<Crop> cropOptional = cropRepository.findByIdAndUserId(id, currentUser.getId());
         if (cropOptional.isPresent()) {
             Crop crop = cropOptional.get();
-//            crop.setIsActive(false);
+            // Removed commented-out code. Restore if needed for soft delete.
             cropRepository.delete(crop);
             return new GlobalResponseHandler().handleResponse("Cultivo desactivado exitosamente", crop, HttpStatus.OK, request);
         } else {

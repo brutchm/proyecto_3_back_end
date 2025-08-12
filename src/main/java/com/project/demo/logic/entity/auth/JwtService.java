@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class JwtService {
+    @Value("${security.jwt.registration-expiration-time:900000}")
+    private long registrationTokenExpiration;
     @Value("${security.jwt.secret-key}")
     private String secretKey;
 
@@ -91,13 +93,12 @@ public class JwtService {
      * Le daremos una vida más corta (15 minutos) para seguridad.
      */
     public String generateRegistrationToken(Map<String, Object> claims) {
-        long registrationExpiration = 900000; // 15 minutos en milisegundos
-        return Jwts.builder()
-                .setClaims(claims)
-                .setSubject((String) claims.get("email"))
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + registrationExpiration))
-                .signWith(getSignInKey(), SignatureAlgorithm.HS256) // USA LA CLAVE PRINCIPAL
-                .compact();
+    return Jwts.builder()
+        .setClaims(claims)
+        .setSubject((String) claims.get("email"))
+        .setIssuedAt(new Date(System.currentTimeMillis()))
+        .setExpiration(new Date(System.currentTimeMillis() + registrationTokenExpiration))
+        .signWith(getSignInKey(), SignatureAlgorithm.HS256) // USA LA CLAVE PRINCIPAL
+        .compact();
     }
 }

@@ -118,7 +118,21 @@ public class CropsManagementRestController {
         record.setCreatedAt(LocalDateTime.now());
         record.setActive(true);
         CropsManagement saved = cropsManagementRepository.save(record);
-        return new GlobalResponseHandler().handleResponse("Record created", saved, HttpStatus.CREATED, request);
+        // Build response with cropId included
+        Map<String, Object> response = new java.util.HashMap<>();
+        response.put("id", saved.getId());
+        response.put("cropId", saved.getCropId());
+        response.put("farmId", saved.getFarmId());
+        response.put("actionName", saved.getActionName());
+        response.put("actionPictureUrl", saved.getActionPictureUrl());
+        response.put("measureUnit", saved.getMeasureUnit());
+        response.put("measureValue", saved.getMeasureValue());
+        response.put("valueSpent", saved.getValueSpent());
+        response.put("actionDate", saved.getActionDate());
+        response.put("createdAt", saved.getCreatedAt());
+        response.put("updatedAt", saved.getUpdatedAt());
+        response.put("active", saved.isActive());
+        return new GlobalResponseHandler().handleResponse("Record created", response, HttpStatus.CREATED, request);
     }
 
     /**
@@ -155,6 +169,11 @@ public class CropsManagementRestController {
         }
         if (req.active() != null) {
             record.setActive(req.active());
+        }
+        // Update crop if cropId is provided
+        if (req.cropId() != null) {
+            Optional<Crop> cropOpt = cropRepository.findById(req.cropId());
+            cropOpt.ifPresent(record::setCrop);
         }
         record.setUpdatedAt(LocalDateTime.now());
         CropsManagement updated = cropsManagementRepository.save(record);
@@ -209,6 +228,7 @@ public class CropsManagementRestController {
     ) {}
 
     public record UpdateManagementRecordRequest(
+        Long cropId,
         String actionName,
         String actionPictureUrl,
         String measureUnit,
