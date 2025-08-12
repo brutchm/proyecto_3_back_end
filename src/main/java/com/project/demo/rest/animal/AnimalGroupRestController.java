@@ -109,7 +109,7 @@ public class AnimalGroupRestController {
     @PutMapping("/{groupId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> updateAnimalGroup(@PathVariable Long farmId, @PathVariable Long groupId, @RequestBody AnimalGroup groupDetails, HttpServletRequest request) {
-        System.out.println(groupDetails);
+    // Removed debug print statement. Use proper logging if needed.
         if (!hasAccessToFarm(farmId)) {
             return new GlobalResponseHandler().handleResponse("Access Denied to farm " + farmId, HttpStatus.FORBIDDEN, request);
         }

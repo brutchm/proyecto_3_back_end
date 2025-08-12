@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.project.demo.logic.entity.plot.PlotGeometryEntityTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2025-08-11T19:34:49" hostname="JIMMY" time="0.007">
-  <properties/>
-  <testcase name="testSetAndGetProperties()" classname="com.project.demo.logic.entity.plot.PlotGeometryEntityTest" time="0.006"/>
-  <testcase name="testEqualsAndHashCode()" classname="com.project.demo.logic.entity.plot.PlotGeometryEntityTest" time="0.001"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>
