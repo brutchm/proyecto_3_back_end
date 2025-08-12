@@ -111,17 +111,7 @@ public class FarmRestController {
             return new GlobalResponseHandler().handleResponse("User farms retrieved successfully", userFarms, HttpStatus.OK, request);
         }
 
-//        if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_SUPER_ADMIN"))) {
-//            Pageable pageable = PageRequest.of(page - 1, size);
-//            Page<Farm> farmPage = farmRepository.findAll(pageable);
-//            Meta meta = new Meta(request.getMethod(), request.getRequestURL().toString());
-//            meta.setTotalPages(farmPage.getTotalPages());
-//            meta.setTotalElements(farmPage.getTotalElements());
-//            return new GlobalResponseHandler().handleResponse("All farms retrieved successfully", farmPage.getContent(), HttpStatus.OK, meta);
-//        } else {
-//            List<Farm> userFarms = farmRepository.findFarmsByUserId(currentUser.getId());
-//            return new GlobalResponseHandler().handleResponse("User farms retrieved successfully", userFarms, HttpStatus.OK, request);
-//        }
+    // Lava flow code removed. Implement authorization logic if needed.
     }
 
     /**

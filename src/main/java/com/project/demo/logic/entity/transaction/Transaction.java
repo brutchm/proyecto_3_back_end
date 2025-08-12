@@ -1,13 +1,18 @@
 package com.project.demo.logic.entity.transaction;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.project.demo.logic.entity.crop.Crop;
 import com.project.demo.logic.entity.farm.Farm;
 import com.project.demo.logic.entity.user.User;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "transactions")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Transaction {
 
     @Id
@@ -19,20 +24,22 @@ public class Transaction {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "farm_id")
+    @JoinColumn(name = "farm_id", nullable = false)
     private Farm farm;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "crop_id")
+    @JoinColumn(name = "crop_id", nullable = false)
     private Crop crop;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "transaction_type", length = 50)
-    private String transactionType;
+    private TransactionEnum transactionType;
 
     private Double quantity;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "measure_unit", length = 50)
-    private String measureUnit;
+    private MeasureUnitEnum measureUnit;
 
     @Column(name = "price_per_unit")
     private Double pricePerUnit;
@@ -43,11 +50,16 @@ public class Transaction {
     @Column(name = "transaction_date")
     private LocalDateTime transactionDate;
 
-    @Column(name = "created_at", updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @CreationTimestamp
+    @Column(updatable = false, name = "created_at")
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
+    @UpdateTimestamp
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @Column(name = "isActive")
+    private Boolean isActive = true;
 
     // Getters y Setters
 
@@ -83,11 +95,11 @@ public class Transaction {
         this.crop = crop;
     }
 
-    public String getTransactionType() {
+    public TransactionEnum getTransactionType() {
         return transactionType;
     }
 
-    public void setTransactionType(String transactionType) {
+    public void setTransactionType(TransactionEnum transactionType) {
         this.transactionType = transactionType;
     }
 
@@ -99,11 +111,11 @@ public class Transaction {
         this.quantity = quantity;
     }
 
-    public String getMeasureUnit() {
+    public MeasureUnitEnum getMeasureUnit() {
         return measureUnit;
     }
 
-    public void setMeasureUnit(String measureUnit) {
+    public void setMeasureUnit(MeasureUnitEnum measureUnit) {
         this.measureUnit = measureUnit;
     }
 
@@ -146,4 +158,10 @@ public class Transaction {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean active) { isActive = active; }
 }

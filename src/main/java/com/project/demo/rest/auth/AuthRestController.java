@@ -76,8 +76,6 @@ public class AuthRestController {
     @PostMapping("/login")
     public ResponseEntity<?> authenticate(@RequestBody User user, HttpServletRequest request) {
         try {
-            System.out.println(user.getUserEmail());
-            System.out.println(user.getUserPassword());
             User authenticatedUser = authenticationService.authenticate(user);
 
             String jwtToken = jwtService.generateToken((UserDetails) authenticatedUser);
@@ -143,7 +141,7 @@ public class AuthRestController {
                 return new GlobalResponseHandler().handleResponse("Correo electronico no encontrado", null, HttpStatus.NOT_FOUND, request);
             }
 
-            System.out.println(req.email());
+            // Removed debug print statement exposing sensitive info.
             String verificationCode = verificationCodeService.generateCode(req.email());
             emailService.sendVerificationCode(req.email(), verificationCode);
 

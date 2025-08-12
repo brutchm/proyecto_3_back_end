@@ -5,12 +5,16 @@ import com.project.demo.logic.entity.animal.AnimalRepository;
 import com.project.demo.logic.entity.farm.Farm;
 import com.project.demo.logic.entity.farm.FarmRepository;
 import com.project.demo.logic.entity.http.GlobalResponseHandler;
+import com.project.demo.logic.entity.http.Meta;
 import com.project.demo.logic.entity.user.User;
 import com.project.demo.logic.entity.userfarm.UserFarmId;
 import com.project.demo.logic.entity.userfarm.UserXFarmRepository;
 import com.project.demo.logic.entity.animal.AnimalGroupRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -59,7 +63,11 @@ public class AnimalRestController {
 
         animal.setFarm(farm.get());
         // Asignar el usuario actual que está registrando el animal
-        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getPrincipal() == null) {
+            return new GlobalResponseHandler().handleResponse("No hay usuario autenticado", HttpStatus.UNAUTHORIZED, request);
+        }
+        User currentUser = (User) authentication.getPrincipal();
         animal.setUser(currentUser);
 
         Animal savedAnimal = animalRepository.save(animal);
@@ -158,6 +166,9 @@ public class AnimalRestController {
      */
     private boolean hasAccessToFarm(Long farmId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getPrincipal() == null) {
+            return false;
+        }
         User currentUser = (User) authentication.getPrincipal();
         if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_SUPER_ADMIN"))) {
             return true;
@@ -181,6 +192,8 @@ public class AnimalRestController {
     @GetMapping("/group/{groupId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getAnimalsByGroup(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
             @PathVariable Long farmId,
             @PathVariable Long groupId,
             HttpServletRequest request
@@ -189,8 +202,24 @@ public class AnimalRestController {
             return new GlobalResponseHandler().handleResponse("Acceso denegado a la Finca " + farmId, HttpStatus.FORBIDDEN, request);
         }
 
-        List<Animal> animals = animalRepository.findByFarmIdAndAnimalGroupId(farmId, groupId);
-        return new GlobalResponseHandler().handleResponse("Animales del grupo " + groupId + " recuperados con éxito", animals, HttpStatus.OK, request);
+        //List<Animal> animals = animalRepository.findByFarmIdAndAnimalGroupId(farmId, groupId);
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<Animal> animals = animalRepository.findByFarmIdAndAnimalGroupId(farmId, groupId,pageable);
+
+        Meta meta = new Meta(request.getMethod(), request.getRequestURL().toString());
+        meta.setTotalPages(animals.getTotalPages());
+        meta.setTotalElements(animals.getTotalElements());
+        meta.setPageNumber(animals.getNumber() + 1);
+        meta.setPageSize(animals.getSize());
+
+        return new GlobalResponseHandler().handleResponse(
+                "Animales del grupo " + groupId + " recuperados con éxito",
+                animals.getContent(),
+                HttpStatus.OK,
+                meta
+        );
+
+
     }
 
 

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface CropsManagementRepository extends JpaRepository<CropsManagement, CropsManagementId> {
-    List<CropsManagement> findById_FarmId(Long farmId);
-    List<CropsManagement> findById_CropId(Long cropId);
+public interface CropsManagementRepository extends JpaRepository<CropsManagement, Long> {
+    List<CropsManagement> findByCrop_Id(Long cropId);
+    List<CropsManagement> findByFarmPlot_Id(Long farmPlotId);
 }
