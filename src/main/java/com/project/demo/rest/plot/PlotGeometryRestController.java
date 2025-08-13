@@ -135,7 +135,7 @@ public class PlotGeometryRestController {
     }
 
     /**
-     * Método de ayuda para verificar si el usuario actual tiene acceso a una parcela
+     * Metodo de ayuda para verificar si el usuario actual tiene acceso a una parcela
      * a través de su pertenencia a la granja padre.
      */
     private boolean hasAccessToPlot(Long plotId) {
