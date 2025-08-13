@@ -110,8 +110,6 @@ public class FarmRestController {
             List<Farm> userFarms = farmRepository.findFarmsByUserId(currentUser.getId());
             return new GlobalResponseHandler().handleResponse("User farms retrieved successfully", userFarms, HttpStatus.OK, request);
         }
-
-    // Lava flow code removed. Implement authorization logic if needed.
     }
 
     /**

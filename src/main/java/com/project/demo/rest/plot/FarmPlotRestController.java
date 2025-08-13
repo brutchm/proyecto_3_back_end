@@ -149,7 +149,7 @@ public class FarmPlotRestController {
     }
 
     /**
-     * Método de ayuda para verificar el acceso del usuario a la granja.
+     * Metodo de ayuda para verificar el acceso del usuario a la granja.
      */
     private boolean hasAccessToFarm(Long farmId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

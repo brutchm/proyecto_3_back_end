@@ -1,7 +1,6 @@
 package com.project.demo.logic.entity.marketprice;
 
 import com.project.demo.logic.entity.crop.Crop;
-import com.project.demo.logic.entity.notification.Notification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
