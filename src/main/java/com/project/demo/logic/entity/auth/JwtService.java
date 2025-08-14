@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class JwtService {
-    @Value("${security.jwt.registration-expiration-time:900000}")
+    @Value("${security.jwt.registration-expiration-time}")
     private long registrationTokenExpiration;
     @Value("${security.jwt.secret-key}")
     private String secretKey;

@@ -141,7 +141,6 @@ public class AuthRestController {
                 return new GlobalResponseHandler().handleResponse("Correo electronico no encontrado", null, HttpStatus.NOT_FOUND, request);
             }
 
-            // Removed debug print statement exposing sensitive info.
             String verificationCode = verificationCodeService.generateCode(req.email());
             emailService.sendVerificationCode(req.email(), verificationCode);
 
